@@ -1,0 +1,21 @@
+.footer {
+  height: 60px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__github-link {
+    margin-right: 40px;
+  }
+  
+  &__github-link:hover {
+    color: $highlight-color;
+  }
+  
+  .logo {
+    display: block;
+    width: 120px;
+    margin-right: 40px;
+  }
+}

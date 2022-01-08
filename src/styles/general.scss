@@ -1,0 +1,75 @@
+*, ::before, ::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $main-font;
+  font-size: $font-size;
+  color: $dark-text-color;
+  background-color: $light-bg-color;
+}
+
+a {
+  text-decoration: none;
+  color: $dark-text-color;
+  transition: 0.2s;
+}
+
+a:hover {
+  color: $main-color;
+}
+
+img {
+  display: block;
+}
+
+ul {
+  list-style: none;
+}
+
+h1 {
+  text-align: center;
+}
+
+.container {
+  max-width: calc(#{container-width} + 2 * #{container-padding});
+  margin: 0 auto;
+  padding: 0 $container-padding;
+}
+
+.rsschool-logo {
+  display: block;
+  width: 120px;
+  margin-right: 40px;
+
+  .st0, .st1, .st2, .st3, .st4, .st5, .st6, .st8, .st9 {
+    fill: $light-bg-color;
+    stroke: $dark-text-color;
+  }
+
+  // JS background
+  .st1 {
+    fill: $main-color;
+  }
+  
+  // JS oval background
+  .st7 {
+    fill: $light-bg-color;
+  }
+
+  // RS SCHOOL
+  .logo-path {
+    fill: $light-bg-color;
+    stroke: $dark-text-color;
+    stroke-width: 4px;
+    transition: $animation-duration ease-in;
+  }
+
+  &:hover {
+    .logo-path {
+      fill: $highlight-color;
+    }
+  }
+}
