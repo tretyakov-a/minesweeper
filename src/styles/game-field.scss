@@ -2,14 +2,6 @@
   // border-collapse: collapse;
   border: 1px solid $main-color;
 
-  tr {
-
-  }
-
-  td {
-
-  }
-
   &__cell {
     width: 24px;
     height: 24px;
@@ -18,20 +10,25 @@
     // transition: 0.1s ease-in;
     cursor: pointer;
     background-color: $main-color-contrast;
-
-    &:hover {
-      background-color: $main-color-contrast;
-    }
+    overflow: hidden;
+    position: relative;
 
     &_closed {
+      &:hover {
+        background-color: $main-color;
+      }
+
       background-color: $main-color-2;
     }
 
-    &_number-1, &_number-2, &_number-3, &_number-4, &_number-5 {
+    &_number-1, &_number-2, &_number-3, &_number-4, &_number-5, &_number-6, &_number-7, &_number-8, &_flagged {
       color: $main-color;
       font-weight: bold;
-      font-size: 18px;
+      font-size: 22px;
       &::before {
+        position: absolute;
+        top: -2px;
+        left: 0;
         display: block;
         width: 100%;
         height: 100%;
@@ -39,19 +36,36 @@
         text-align: center;
       }
     }
+
+    &_flagged {
+      background: url("../assets//flag2.png"), $main-color-2;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: 60%;
+
+      color: $highlight-color;
+    }
+
+    &_highlighted {
+      background: $highlight-color;
+    }
+    
     &_number-1 {
+     color: blue; 
       &::before {
         content: "1";
       }
     }
 
     &_number-2 {
+      color: green;
       &::before {
         content: "2";
       }
     }
 
     &_number-3 {
+      color: red;
       &::before {
         content: "3";
       }
