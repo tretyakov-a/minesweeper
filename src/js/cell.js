@@ -20,6 +20,30 @@ export default class Cell {
   set value(newValue) {
     this._value = newValue;
   }
+
+  get isOpened() {
+    return this._state === Cell.STATE_OPENED;
+  }
+
+  get isClosed() {
+    return this._state === Cell.STATE_CLOSED;
+  }
+
+  get isFlagged() {
+    return this._state === Cell.STATE_FLAGGED;
+  }
+
+  get isNumber() {
+    return Cell.isNumberValue(this._value);
+  }
+
+  get isEmpty() {
+    return this._value === Cell.VALUE_EMPTY;
+  }
+
+  get isMined() {
+    return this._value === Cell.VALUE_MINE;
+  }
 }
 
 Cell.isNumberValue = (value) => {

@@ -26,11 +26,14 @@
   --font-size: 16px;
 }
 
+
 $container-width: var(--container-width);
 $container-padding: var(--container-padding);
 $footer-height: var(--footer-height);
 $header-height: var(--header-height);
 $animation-duration: 0.2s;
+
+$number-colors: blue, green, red, purple, orange, gray, teal, yellow;
 
 $light-bg-color: var(--light-bg-color);
 $dark-bg-color: var(--dark-bg-color);

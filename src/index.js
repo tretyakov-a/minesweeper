@@ -15,25 +15,37 @@ const cellModificators = {
   highlighted: setModificator('highlighted'),
 }
 
-const toCellKey = ([rowIdx, colIdx]) => `${rowIdx}-${colIdx}`;
-
 const currentDifficulty = options.difficulty.medium;
 
 const gameState = new GameState(currentDifficulty);
 
 const cells = {};
-const gameField = document.querySelector('.game');
-gameField.insertAdjacentElement('afterbegin', renderGameField());
+
+const gameContainer = document.querySelector('.game');
+const gameField = renderGameField();
+gameField.addEventListener('mousedown', handleGameFieldMouseDown);
+gameField.addEventListener('mouseup', handleGameFieldMouseUp);
+gameField.addEventListener('contextmenu', handleGameFieldRightClick);
+
+gameContainer.insertAdjacentElement('afterbegin', gameField);
+
 const message = document.createElement('div');
-gameField.insertAdjacentElement('afterbegin', message);
+gameContainer.insertAdjacentElement('afterbegin', message);
 
 document.addEventListener('mouseup', handleDocumentMouseUp);
 let highlightedCells = null;
-// applyState(); //dev
 
+function createCell(cellKey) {
+  const cell = document.createElement('td');
+  cell.classList.add(cellClass);
+  cell.classList.add(cellModificators.closed);
+  cell.dataset.key = cellKey;
+  cell.dataset.state = Cell.STATE_CLOSED;
+  return cell;
+}
 
 function renderGameField() {
-  const { width, height} = currentDifficulty;
+  const { width, height } = currentDifficulty;
   const table = document.createElement('table');
   table.classList.add('game-field');
 
@@ -41,23 +53,12 @@ function renderGameField() {
     const row = document.createElement('tr');
     for (let colIdx = 0; colIdx < width; colIdx += 1) {
       const cellKey = toCellKey([rowIdx, colIdx]);
-      const cell = document.createElement('td');
-      cell.classList.add(cellClass);
-      cell.classList.add(cellModificators.closed);
-      cell.dataset.key = cellKey;
-      cell.dataset.state = Cell.STATE_CLOSED;
+      const cell = createCell(cellKey);
       cells[cellKey] = cell;
-
-      // gameState.openCell(rowIdx, colIdx); //dev
-
       row.insertAdjacentElement('beforeend', cell);
     }
     table.insertAdjacentElement('beforeend', row);
   }
-
-  table.addEventListener('mousedown', handleGameFieldMouseDown);
-  table.addEventListener('click', handleGameFieldLeftClick);
-  table.addEventListener('contextmenu', handleGameFieldRightClick);
   return table;
 }
 
@@ -73,38 +74,44 @@ function splitCellKey(key) {
   return key.split('-').map(Number);
 }
 
+function toCellKey([rowIdx, colIdx]) {
+  return `${rowIdx}-${colIdx}`;
+}
+
 function applyState() {
   Object.keys(cells).forEach(key => {
     const [ rowIdx, colIdx ] = splitCellKey(key);
-    const { state, value } = gameState.getCell(rowIdx, colIdx);
-    const cell = cells[key];
-    const cellState = +cell.dataset.state;
-    if (state === Cell.STATE_OPENED && cellState !== Cell.STATE_OPENED) {
-      cell.dataset.state = Cell.STATE_OPENED;
-      cell.classList.remove(cellModificators.closed);
-      cell.classList.add(getCellModificator(value));
+    const cell = gameState.getCell(rowIdx, colIdx);
+    const cellEl = cells[key];
+    const cellElState = +cellEl.dataset.state;
+    if (cell.isOpened && cellElState !== Cell.STATE_OPENED) {
+      cellEl.dataset.state = Cell.STATE_OPENED;
+      cellEl.classList.remove(cellModificators.closed);
+      cellEl.classList.add(getCellModificator(cell.value));
 
-    } else if (state === Cell.STATE_FLAGGED && cellState !== Cell.STATE_FLAGGED) {
-      cell.dataset.state = Cell.STATE_FLAGGED;
-      cell.classList.remove(cellModificators.closed);
-      cell.classList.add(cellModificators.flagged);
+    } else if (cell.isFlagged && cellElState !== Cell.STATE_FLAGGED) {
+      cellEl.dataset.state = Cell.STATE_FLAGGED;
+      cellEl.classList.remove(cellModificators.closed);
+      cellEl.classList.add(cellModificators.flagged);
 
-    } else if (state === Cell.STATE_CLOSED && cellState !== Cell.STATE_CLOSED) {
-      cell.dataset.state = Cell.STATE_CLOSED;
-      cell.classList.remove(cellModificators.flagged);
-      cell.classList.add(cellModificators.closed);
+    } else if (cell.isClosed && cellElState !== Cell.STATE_CLOSED) {
+      cellEl.dataset.state = Cell.STATE_CLOSED;
+      cellEl.classList.remove(cellModificators.flagged);
+      cellEl.classList.add(cellModificators.closed);
     }
   })
 }
 
-function handleGameFieldLeftClick(e) {
-  const cell = e.target.closest('.game-field__cell');
-  if (cell) {
-    const [ rowIdx, colIdx ] = splitCellKey(cell.dataset.key);
+function handleGameFieldMouseUp(e) {
+  const cellEl = e.target.closest('.game-field__cell');
+  if (cellEl) {
+    const [ rowIdx, colIdx ] = splitCellKey(cellEl.dataset.key);
+    const cell = gameState.getCell(rowIdx, colIdx);
     if (e.button === 0) {
       gameState.openCell(rowIdx, colIdx);
-      if (gameState.getCellValue(rowIdx, colIdx) === Cell.VALUE_MINE) {
-        console.log('You`r looser!')
+
+      if (cell.isMined) {
+        console.log('You`r looser!');
       }
     }
     if (e.button === 2) {
@@ -116,7 +123,6 @@ function handleGameFieldLeftClick(e) {
 
 function handleGameFieldRightClick(e) {
   e.preventDefault();
-  handleGameFieldLeftClick(e);
 }
 
 function handleDocumentMouseUp(e) {
@@ -128,14 +134,18 @@ function handleDocumentMouseUp(e) {
 
 
 function handleGameFieldMouseDown(e) {
+  e.preventDefault();
   const cell = e.target.closest('.game-field__cell');
   if (cell) {
     const [ rowIdx, colIdx ] = splitCellKey(cell.dataset.key);
     if (e.button === 0) {
-      const { value, state } = gameState.getCell(rowIdx, colIdx);
-      if (state === Cell.STATE_OPENED && Cell.isNumberValue(value)) {
-        highlightedCells = gameState.getHighlightedCells(rowIdx, colIdx).map(toCellKey);
-        highlightedCells.forEach(key => cells[key].classList.add(cellModificators.highlighted));
+      const cell = gameState.getCell(rowIdx, colIdx);
+      if (cell.isOpened && cell.isNumber) {
+        highlightedCells = gameState
+          .getHighlightedCells(rowIdx, colIdx)
+          .map(toCellKey);
+        highlightedCells
+          .forEach(key => cells[key].classList.add(cellModificators.highlighted));
       }
     }
   }

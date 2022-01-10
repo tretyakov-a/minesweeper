@@ -1,93 +1,82 @@
 import { randomNumber } from './helpers';
 import Cell from './cell';
 
+const checks = {
+  topLeft: [-1, -1],
+  top: [-1, 0],
+  topRight: [-1, 1],
+  left: [0, -1],
+  right: [0, 1],
+  bottomLeft: [1, -1],
+  bottom: [1, 0],
+  bottomRight: [1, 1]
+};
+
 export default class GameState {
   constructor(difficulty) {
-    this.checks = {
-      topLeft: [-1, -1],
-      top: [-1, 0],
-      topRight: [-1, 1],
-      left: [0, -1],
-      right: [0, 1],
-      bottomLeft: [1, -1],
-      bottom: [1, 0],
-      bottomRight: [1, 1]
-    };
-
     this.difficulty = difficulty;
     this.state = this._generateInitialMatrix();
     this._generateMines();
     this._fillGameStateWithNumbers();
   }
 
-  getCellValue = (i, j) => {
-    return this.state[i][j].value;
-  }
-
-  getSellState = (i, j) => {
-    return this.state[i][j].state;
-  }
-
   getCell = (i, j) => {
+    if (!this._checkCell(i, j)) {
+      return undefined;
+    }
     return this.state[i][j];
   }
 
-  setCellState = (state, i, j) => {
-    this.state[i][j].state = state;
-  }
-
-  setCellValue = (value, i, j) => {
-    this.state[i][j].value = value;
-  }
+  _checkCell = (i, j) => {
+    return this.state[i] !== undefined && this.state[i][j] !== undefined
+  };
 
   flagCell = (i, j) => {
-    const cellState = this.getSellState(i, j);
-    if (cellState === Cell.STATE_OPENED) {
+    const cell = this.getCell(i, j);
+    if (cell.isOpened) {
       return;
     }
-    if (cellState === Cell.STATE_FLAGGED) {
-      this.setCellState(Cell.STATE_CLOSED, i, j);
+    if (cell.isFlagged) {
+      cell.state = Cell.STATE_CLOSED;
     } else {
-      this.setCellState(Cell.STATE_FLAGGED, i, j);
+      cell.state = Cell.STATE_FLAGGED
     }
-
-    console.log(this.getSellState(i, j));
   }
   
   openCell = (i, j) => {
-    const { state, value } = this.getCell(i, j);
-    if (state === Cell.STATE_FLAGGED) {
+    const cell = this.getCell(i, j);
+    if (cell.isFlagged) {
       return;
     }
-    if (state === Cell.STATE_OPENED) {
-      if (Cell.isNumberValue(value)) {
+    if (cell.isOpened) {
+      if (cell.isNumber) {
         const cells = this.getHighlightedCells(i, j);
-        if (cells.length === 0 || value > this.countFlagsAround(i, j)) {
+        if (cells.length === 0 || cell.value > this.countFlagsAround(i, j)) {
           return;
         }
-        cells.forEach(([i, j]) => {
-          this.openCell(i, j);
-        })
+        cells.forEach(([i, j]) => this.openCell(i, j));
       }
       return;
     }
-    this.setCellState(Cell.STATE_OPENED, i, j);
-    if (this.getCellValue(i, j) === Cell.VALUE_EMPTY) {
+    cell.state = Cell.STATE_OPENED;
+    if (cell.isEmpty) {
       this._revealEmptySpace(i, j);
     }
   }
 
   countFlagsAround = (i, j) => {
-    return Object.values(this.checks)
-    .reduce((counter, [dx, dy]) => (
-      counter + this._checkFlagged(i + dx, j + dy)
-    ), 0);
+    return Object.values(checks)
+      .reduce((counter, [dx, dy]) => {
+        const cell = this.getCell(i + dx, j + dy);
+        return counter + (cell ? cell.isFlagged : 0);
+      }, 0);
   }
 
   getHighlightedCells = (i, j) => {
-    return Object.values(this.checks)
+    return Object.values(checks)
       .reduce((cells, [dx, dy]) => {
-        if (this._checkClosed(i + dx, j + dy)) {
+        const cell = this.getCell(i + dx, j + dy);
+        if (cell && cell.isClosed) {
           cells.push([i + dx, j + dy]);
         }
         return cells;
@@ -96,28 +85,29 @@ export default class GameState {
 
   _revealEmptySpace = (startI, startJ) => {
     const reveal = (key, startI, startJ) => {
-      const [ dx = 0, dy = 0 ] = this.checks[key];
+      const [ dx, dy ] = checks[key];
       const i = startI + dx;
       const j = startJ + dy;
-
-      if (this._checkOpened(i, j)) {
+      
+      const cell = this.getCell(i, j);
+      if (!cell || cell.isOpened || cell.isFlagged) {
         return;
       }
-      if (this._checkNumber(i, j)) {
-        this.setCellState(Cell.STATE_OPENED, i, j);
+      if (cell.isNumber) {
+        cell.state = Cell.STATE_OPENED;
         return;
       }
-      if (this._checkEmpty(i, j)) {
-        this.setCellState(Cell.STATE_OPENED, i, j);
-        Object.keys(this.checks).forEach(checkKey => reveal(checkKey, i, j))
+      if (cell.isEmpty) {
+        cell.state = Cell.STATE_OPENED;
+        Object.keys(checks).forEach(checkKey => reveal(checkKey, i, j))
       }
     }
 
-    Object.keys(this.checks).forEach(key => reveal(key, startI, startJ));
+    Object.keys(checks).forEach(key => reveal(key, startI, startJ));
   };
 
   _generateInitialMatrix = () => {
-    const { width, height} = this.difficulty;
+    const { width, height } = this.difficulty;
     const matrix = [];
     for (let rowIdx = 0; rowIdx < height; rowIdx += 1) {
       matrix.push(new Array(width).fill(null));
@@ -129,7 +119,7 @@ export default class GameState {
   }
   
   _generateMines = () => {
-    const { mines: minesNumber, width, height} = this.difficulty;
+    const { mines: minesNumber, width, height } = this.difficulty;
     const mines = {};
     for (let k = 0; k < minesNumber; k += 1) {
       let rowIdx, colIdx, cellIdx;
@@ -139,53 +129,25 @@ export default class GameState {
         cellIdx = `${rowIdx}-${colIdx}`;
       } while (mines[cellIdx]);
       mines[cellIdx] = 1;
-      this.setCellValue(Cell.VALUE_MINE, rowIdx, colIdx);
+      this.getCell(rowIdx, colIdx).value = Cell.VALUE_MINE;
     }
   }
 
-  _check = (i, j, state) => {
-    return this._checkCell(i, j) && this.getSellState(i, j) === state;
-  }
-
-  _checkFlagged = (i, j) => {
-    return this._check(i, j, Cell.STATE_FLAGGED);
-  }
-
-  _checkClosed = (i, j) => {
-    return this._checkCell(i, j) && this.getSellState(i, j) === Cell.STATE_CLOSED;
-  }
-
-  _checkOpened = (i, j) => {
-    return this._checkCell(i, j) && this.getSellState(i, j) === Cell.STATE_OPENED;
-  }
-
-  _checkEmpty = (i, j) => {
-    return this._checkCell(i, j) && this.getCellValue(i, j) === Cell.VALUE_EMPTY;
-  }
-
-  _checkNumber = (i, j) => {
-    return this._checkCell(i, j) && Cell.isNumberValue(this.getCellValue(i, j));
-  }
-
-  _checkMine = (i, j) => {
-    return this._checkCell(i, j) && this.getCellValue(i, j) === Cell.VALUE_MINE;
-  }
-
-  _checkCell = (i, j) => {
-    return this.state[i] !== undefined && this.state[i][j] !== undefined
-  };
-
   _countNeighboringMines = (i, j) => {
-    return Object.values(this.checks)
-      .reduce((counter, [dx, dy]) => counter += this._checkMine(i + dx, j + dy), 0);
+    return Object.values(checks)
+      .reduce((counter, [ dx, dy ]) => {
+        const cell = this.getCell(i + dx, j + dy);
+        return counter + (cell ? cell.isMined : 0);
+      }, 0);
   }
 
   _fillGameStateWithNumbers = () => {
     for (let i = 0; i < this.state.length; i += 1) {
       for (let j = 0; j < this.state[i].length; j += 1) {
-        if (this.getCellValue(i, j) !== Cell.VALUE_MINE) {
+        const cell = this.getCell(i, j);
+        if (!cell.isMined) {
           const value = this._countNeighboringMines(i, j);
-          this.setCellValue(value, i, j);
+          cell.value = value;
         }
       }
     }
