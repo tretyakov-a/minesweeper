@@ -1,4 +1,5 @@
 import Cell from './cell';
+import CellKey from './cell-key';
 import { GAME_FIELD_CLASS, CELL_CLASS, CELL_MODIFICATORS, MOUSE } from './constants';
 
 export default class GameField {
@@ -12,8 +13,6 @@ export default class GameField {
     this.gameField.addEventListener('mousedown', this.handleGameFieldMouseDown);
     this.gameField.addEventListener('mouseup', this.handleGameFieldMouseUp);
     this.gameField.addEventListener('contextmenu', this.handleGameFieldRightClick);
-
-    document.addEventListener('mouseup', this.handleDocumentMouseUp);
   }
 
   render = () => {
@@ -24,7 +23,7 @@ export default class GameField {
     const cell = document.createElement('td');
     cell.classList.add(CELL_CLASS);
     cell.classList.add(CELL_MODIFICATORS.closed);
-    cell.dataset.key = cellKey;
+    cell.dataset.key = cellKey.value;
     cell.dataset.state = Cell.STATE_CLOSED;
     return cell;
   }
@@ -37,10 +36,10 @@ export default class GameField {
     for (let rowIdx = 0; rowIdx < height; rowIdx += 1) {
       const row = document.createElement('tr');
       for (let colIdx = 0; colIdx < width; colIdx += 1) {
-        const cellKey = this.toCellKey([rowIdx, colIdx]);
-        const cell = this._createCell(cellKey);
-        this.cells[cellKey] = cell;
-        row.insertAdjacentElement('beforeend', cell);
+        const cellKey = new CellKey(rowIdx, colIdx);
+        const cellEl = this._createCell(cellKey);
+        this.cells[cellKey] = cellEl;
+        row.insertAdjacentElement('beforeend', cellEl);
       }
       table.insertAdjacentElement('beforeend', row);
     }
@@ -55,18 +54,10 @@ export default class GameField {
     }
   }
   
-  splitCellKey = (key) => {
-    return key.split('-').map(Number);
-  }
-  
-  toCellKey = ([rowIdx, colIdx]) => {
-    return `${rowIdx}-${colIdx}`;
-  }
-  
   applyState = () => {
     Object.keys(this.cells).forEach(key => {
-      const [ rowIdx, colIdx ] = this.splitCellKey(key);
-      const cell = this.gameState.getCell(rowIdx, colIdx);
+      const cellKey = new CellKey(key);
+      const cell = this.gameState.getCell(cellKey);
       const cellEl = this.cells[key];
       const cellElState = +cellEl.dataset.state;
 
@@ -90,21 +81,26 @@ export default class GameField {
   
   handleGameFieldMouseUp = (e) => {
     const cellEl = e.target.closest(`.${CELL_CLASS}`);
-    if (cellEl) {
-      const [ rowIdx, colIdx ] = this.splitCellKey(cellEl.dataset.key);
-      const cell = this.gameState.getCell(rowIdx, colIdx);
-      if (e.button === MOUSE.LEFT && !cell.isFlagged) {
-        this.gameState.openCell(rowIdx, colIdx);
-  
-        if (cell.isMined) {
-          console.log('You`r looser!');
-        }
-      }
-      if (e.button === MOUSE.RIGHT) {
-        this.gameState.flagCell(rowIdx, colIdx);
-      }
-      this.applyState();
+    if (!cellEl) {
+      return;
     }
+    const cellKey = new CellKey(cellEl.dataset.key);
+    const cell = this.gameState.getCell(cellKey);
+    if (e.button === MOUSE.LEFT && !cell.isFlagged) {
+      if (!this.gameState.isGameStart) {
+        this.gameState.generateState(cellKey);
+      }
+
+      this.gameState.openCell(cellKey);
+
+      if (cell.isMined) {
+        console.log('You`r looser!');
+      }
+    }
+    if (e.button === MOUSE.RIGHT) {
+      this.gameState.flagCell(cellKey);
+    }
+    this.applyState();
   }
   
   handleGameFieldRightClick = (e) => {
@@ -113,8 +109,9 @@ export default class GameField {
   
   handleDocumentMouseUp = (e) => {
     if (this.highlightedCells !== null) {
-      this.highlightedCells.forEach(key => this.cells[key].classList.remove(CELL_MODIFICATORS.highlighted));
+      this.highlightedCells.forEach(key => this.cells[key.value].classList.remove(CELL_MODIFICATORS.highlighted));
       this.highlightedCells = null;
+      document.removeEventListener('mouseup', this.handleDocumentMouseUp);
     }
   }
   
@@ -123,15 +120,15 @@ export default class GameField {
     e.preventDefault();
     const cellEl = e.target.closest(`.${CELL_CLASS}`);
     if (cellEl) {
-      const [ rowIdx, colIdx ] = this.splitCellKey(cellEl.dataset.key);
+      const cellKey = new CellKey(cellEl.dataset.key);
       if (e.button === 0) {
-        const cell = this.gameState.getCell(rowIdx, colIdx);
+        const cell = this.gameState.getCell(cellKey);
         if (cell.isOpened && cell.isNumber) {
-          this.highlightedCells = this.gameState
-            .getHighlightedCells(rowIdx, colIdx)
-            .map(this.toCellKey);
+          this.highlightedCells = this.gameState.getHighlightedCells(cellKey);
           this.highlightedCells
-            .forEach(key => this.cells[key].classList.add(CELL_MODIFICATORS.highlighted));
+            .forEach(key => this.cells[key.value].classList.add(CELL_MODIFICATORS.highlighted));
+
+          document.addEventListener('mouseup', this.handleDocumentMouseUp);
         }
       }
     }

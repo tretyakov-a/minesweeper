@@ -1,5 +1,6 @@
 import { randomNumber } from './helpers';
 import Cell from './cell';
+import CellKey from './cell-key';
 
 const checks = {
   topLeft: [-1, -1],
@@ -17,24 +18,23 @@ export default class GameState {
     this.difficulty = difficulty;
     this.onWin = onWin;
     this.onLose = onLose;
-    this.state = this._generateInitialMatrix();
-    this._generateMines();
-    this._fillGameStateWithNumbers();
+    this.isGameStart = false;
+    this.clearState();
   }
 
-  getCell = (i, j) => {
-    if (!this._checkCell(i, j)) {
+  getCell = (cellKey) => {
+    if (!this._checkCell(cellKey)) {
       return undefined;
     }
-    return this.state[i][j];
+    return this.state[cellKey.x][cellKey.y];
   }
 
-  _checkCell = (i, j) => {
-    return this.state[i] !== undefined && this.state[i][j] !== undefined
+  _checkCell = (cellKey) => {
+    return this.state[cellKey.x] !== undefined && this.state[cellKey.x][cellKey.y] !== undefined
   };
 
-  flagCell = (i, j) => {
-    const cell = this.getCell(i, j);
+  flagCell = (cellKey) => {
+    const cell = this.getCell(cellKey);
     if (cell.isOpened) {
       return;
     }
@@ -45,52 +45,68 @@ export default class GameState {
     }
   }
   
-  openCell = (i, j) => {
-    const cell = this.getCell(i, j);
+  openCell = (cellKey) => {
+    const cell = this.getCell(cellKey);
     if (cell.isFlagged) {
       return;
     }
     if (cell.isOpened && cell.isNumber) {
-      const cells = this.getHighlightedCells(i, j);
-      if (cells.length === 0 || cell.value > this.countFlagsAround(i, j)) {
+      const cells = this.getHighlightedCells(cellKey);
+      if (cells.length === 0 || cell.value > this.countFlagsAround(cellKey)) {
         return;
       }
-      cells.forEach(([i, j]) => this.openCell(i, j));
+      cells.forEach(this.openCell);
 
       return;
     }
     cell.state = Cell.STATE_OPENED;
     if (cell.isEmpty) {
-      this._revealEmptySpace(i, j);
+      this._revealEmptySpace(cellKey);
     }
   }
 
-  countFlagsAround = (i, j) => {
+  countFlagsAround = (cellKey) => {
     return Object.values(checks)
       .reduce((counter, [dx, dy]) => {
-        const cell = this.getCell(i + dx, j + dy);
+        const newCellKey = new CellKey(cellKey.x + dx, cellKey.y + dy);
+        const cell = this.getCell(newCellKey);
         return counter + (cell ? cell.isFlagged : 0);
       }, 0);
   }
 
-  getHighlightedCells = (i, j) => {
+  getHighlightedCells = (cellKey) => {
     return Object.values(checks)
       .reduce((cells, [dx, dy]) => {
-        const cell = this.getCell(i + dx, j + dy);
+        const newCellKey = new CellKey(cellKey.x + dx, cellKey.y + dy);
+        const cell = this.getCell(newCellKey);
         if (cell && cell.isClosed) {
-          cells.push([i + dx, j + dy]);
+          cells.push(newCellKey);
         }
         return cells;
       }, []);
   }
 
-  _revealEmptySpace = (startI, startJ) => {
-    const reveal = (key, startI, startJ) => {
+  setDifficulty = (newDifficulty) => {
+    this.difficulty = newDifficulty;
+  }
+
+  generateState = (cellKey) => {
+    this.isGameStart = true;
+    this._generateMines(cellKey);
+    this._generateNumbers();
+  }
+
+  clearState = () => {
+    this.isGameStart = false;
+    this.state = this._generateInitialMatrix();
+  }
+
+  _revealEmptySpace = (startCellKey) => {
+    const reveal = (key, startCellKey) => {
       const [ dx, dy ] = checks[key];
-      const i = startI + dx;
-      const j = startJ + dy;
+      const newCellKey = new CellKey(startCellKey.x + dx, startCellKey.y + dy);
       
-      const cell = this.getCell(i, j);
+      const cell = this.getCell(newCellKey);
       if (!cell || cell.isOpened || cell.isFlagged) {
         return;
       }
@@ -100,11 +116,11 @@ export default class GameState {
       }
       if (cell.isEmpty) {
         cell.state = Cell.STATE_OPENED;
-        Object.keys(checks).forEach(checkKey => reveal(checkKey, i, j))
+        Object.keys(checks).forEach(checkKey => reveal(checkKey, newCellKey))
       }
     }
 
-    Object.keys(checks).forEach(key => reveal(key, startI, startJ));
+    Object.keys(checks).forEach(key => reveal(key, startCellKey));
   };
 
   _generateInitialMatrix = () => {
@@ -119,35 +135,38 @@ export default class GameState {
     return matrix;
   }
   
-  _generateMines = () => {
+  _generateMines = (excludedCellKey) => {
     const { mines: minesNumber, width, height } = this.difficulty;
     const mines = {};
     for (let k = 0; k < minesNumber; k += 1) {
-      let rowIdx, colIdx, cellIdx;
+      let newCellKey;
       do {
-        rowIdx = randomNumber(0, height);
-        colIdx = randomNumber(0, width);
-        cellIdx = `${rowIdx}-${colIdx}`;
-      } while (mines[cellIdx]);
-      mines[cellIdx] = 1;
-      this.getCell(rowIdx, colIdx).value = Cell.VALUE_MINE;
+        newCellKey = new CellKey(
+          randomNumber(0, height),
+          randomNumber(0, width)
+        )
+      } while (mines[newCellKey.value] || newCellKey.value === excludedCellKey.value);
+      mines[newCellKey.value] = 1;
+      this.getCell(newCellKey).value = Cell.VALUE_MINE;
     }
   }
 
-  _countNeighboringMines = (i, j) => {
+  _countNeighboringMines = (cellKey) => {
     return Object.values(checks)
       .reduce((counter, [ dx, dy ]) => {
-        const cell = this.getCell(i + dx, j + dy);
+        const newCellKey = new CellKey(cellKey.x + dx, cellKey.y + dy);
+        const cell = this.getCell(newCellKey);
         return counter + (cell ? cell.isMined : 0);
       }, 0);
   }
 
-  _fillGameStateWithNumbers = () => {
-    for (let i = 0; i < this.state.length; i += 1) {
-      for (let j = 0; j < this.state[i].length; j += 1) {
-        const cell = this.getCell(i, j);
+  _generateNumbers = () => {
+    for (let rowIdx = 0; rowIdx < this.state.length; rowIdx += 1) {
+      for (let colIdx = 0; colIdx < this.state[rowIdx].length; colIdx += 1) {
+        const cellKey = new CellKey(rowIdx, colIdx);
+        const cell = this.getCell(cellKey);
         if (!cell.isMined) {
-          const value = this._countNeighboringMines(i, j);
+          const value = this._countNeighboringMines(cellKey);
           cell.value = value;
         }
       }
