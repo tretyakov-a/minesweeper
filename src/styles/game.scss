@@ -1,0 +1,49 @@
+.game {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &__top-panel {
+    width: 100%;
+    height: var(--top-panel-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__timer,
+  &__mines-counter {
+    font-size: 24px;
+  }
+
+  &__indicator {
+
+  }
+
+  &__mines-counter {
+    
+  }
+}
+
+.reset-btn {
+  position: relative;
+
+  &::before {
+    content: "\f118";
+    font-family: "Font awesome 5 Free";
+    font-weight: 400;
+    font-size: 32px;
+    text-align: center;
+    line-height: 46px;
+  }
+
+  &_win {
+    content: "\f599";
+  }
+
+  &_lose {
+    content: "\f57a";
+  }
+}

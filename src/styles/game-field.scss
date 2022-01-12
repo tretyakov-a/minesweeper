@@ -1,33 +1,40 @@
 .game-field {
-  // border: 1px solid $main-color;
+  border: 1px solid var(--game-field-border);
   border-spacing: 0px;
-  background: var(--main-color);
+  background: var(--game-field-bg);
 
   &__cell {
     width: 24px;
     height: 24px;
-    border: 2px solid;
     border-radius: 3px;
+    border: 1px solid var(--game-field-border);
     // transition: 0.1s ease-in;
     cursor: pointer;
-    background-color: $main-color-contrast;
+    background-color: var(--cell-opened-bg);
     overflow: hidden;
     position: relative;
-    border-top-color: $main-color;
-    border-right-color: $main-color;
-    border-bottom-color: $main-color-contrast;
-    border-left-color: $main-color-contrast;
 
-    &_closed {
+    &_closed,
+    &_flagged {
+      background-color: var(--cell-closed-bg);
+      border: 2px solid;
+      border-top-color: var(--cell-border-top-right);
+      border-right-color: var(--cell-border-top-right);
+      border-bottom-color: var(--cell-border-bottom-left);
+      border-left-color: var(--cell-border-bottom-left);
+
       &:hover {
-        border: 1px solid $main-color;
+        border: 1px solid var(--game-field-border);
+        background-color: var(--cell-highlight-bg);
       }
 
-      background-color: $main-color-2;
     }
 
-    &_number-1, &_number-2, &_number-3, &_number-4, &_number-5, &_number-6, &_number-7, &_number-8, &_flagged {
-      color: $main-color;
+    &_number-1, &_number-2,
+    &_number-3, &_number-4,
+    &_number-5, &_number-6,
+    &_number-7, &_number-8,
+    &_flagged {
       font-weight: bold;
       font-size: 22px;
       &::before {
@@ -45,7 +52,7 @@
     }
 
     &_flagged {
-      background: url("../assets//flag2.png"), $main-color-2;
+      background: url("../assets/image2vector.svg"), var(--cell-flagged-bg);
       background-repeat: no-repeat;
       background-position: center center;
       background-size: 60%;
@@ -54,7 +61,7 @@
     }
 
     &_highlighted {
-      background: $highlight-color;
+      background: var(--cell-highlight-bg);
     }
 
     @for $i from 1 through 8 {
@@ -67,7 +74,7 @@
     }
 
     &_mine {
-      background: url("../assets/mine.svg"), $main-color-contrast;
+      background: url("../assets/mine.svg"), var(--cell-opened-bg);
       background-repeat: no-repeat;
       background-position: center center;
       background-size: 80%;

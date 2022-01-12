@@ -1,21 +1,21 @@
 .footer {
-  height: 60px;
-  margin-top: 20px;
+  height: var(--footer-height);
+  max-width: var(--header-max-width);
+  position: absolute;
+  bottom: 0;
+  left: $container-padding;
+  right: $container-padding;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  margin: 0 auto;
 
-  &__github-link {
-    margin-right: 40px;
-  }
+  // &__github-link {
+  //   margin-right: 40px;
+  // }
   
-  &__github-link:hover {
-    color: $highlight-color;
-  }
+  // &__github-link:hover {
+  //   color: $highlight-color;
+  // }
   
-  .logo {
-    display: block;
-    width: 120px;
-    margin-right: 40px;
-  }
 }

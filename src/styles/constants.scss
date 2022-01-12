@@ -1,6 +1,33 @@
-@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding:wght@400;700&display=swap');
 
 :root {
+  --color-tone-11: white;
+  --color-tone-10: #eceff1;
+  --color-tone-9: #cfd8dc;
+  --color-tone-8: #b0bec5;
+  --color-tone-7: #90a4ae;
+  --color-tone-6: #78909c;
+  --color-tone-5: #607d8b;
+  --color-tone-4: #546e7a;
+  --color-tone-3: #455a64;
+  --color-tone-2: #37474f;
+  --color-tone-1: #263238;
+
+  --text-color: var(--color-tone-2);
+
+  --cell-highlight-bg: var(--color-tone-7);
+  --cell-opened-bg: var(--color-tone-11);
+  --cell-closed-bg: var(--color-tone-6);
+  --cell-flagged-bg: var(--color-tone-6);
+  --cell-border-top-right: var(--color-tone-4);
+  --cell-border-bottom-left: var(--color-tone-8);
+
+  --game-field-border: var(--color-tone-4);
+  --game-field-bg: var(--color-tone-4);
+
+  --btn-color: var(--color-tone-4);
+  --btn-color-hover: var(--color-tone-6);
+  --btn-color-active: var(--color-tone-2);
+  --btn-bg-focus: var(--color-tone-9);
 
   --light-text-color: white;
   --dark-text-color: black;
@@ -15,17 +42,32 @@
   --main-color-rgba-80: rgba(0, 128, 128, 0.8);
   --main-color-rgba-50: rgba(0, 128, 128, 0.5);
 
-  --main-font: 'Nanum Gothic Coding', monospace;
-  --header-font: 'Nanum Gothic Coding', monospace;;
+  // --light-text-color: white;
+  // --dark-text-color: black;
+  // --header-color: #bffcfb;
+  // --highlight-color: #ff8749;
+  // --dark-bg-color: #1d2025;
+  // --light-bg-color: white;
+  
+  // --btn-bg-1: #EDC298;
+  // --btn-bg-2: #1BDECD;
+  // --main-color: teal;
+  // --main-color-2: #52b5b5;
+  // --main-color-contrast: #bffcfb;
+  // --main-color-rgba-80: rgba(0, 128, 128, 0.8);
+  // --main-color-rgba-50: rgba(0, 128, 128, 0.5);
+
+  --main-font: "Clear Sans", sans-serif;
+  --header-font: "Clear Sans", sans-serif;
+  --font-size: 16px;
 
   --container-width: 1024px;
   --container-padding: 20px;
   --header-height: 60px;
   --footer-height: 60px;
-  
-  --font-size: 16px;
+  --header-max-width: 600px;
+  --top-panel-height: 48px;
 }
-
 
 $container-width: var(--container-width);
 $container-padding: var(--container-padding);
@@ -33,7 +75,8 @@ $footer-height: var(--footer-height);
 $header-height: var(--header-height);
 $animation-duration: 0.2s;
 
-$number-colors: blue, green, red, purple, orange, gray, teal, yellow;
+// $number-colors: blue, green, red, purple, orange, gray, teal, yellow;
+$number-colors: #00418d, #00ba71, #f43545, #5f2879, #ff8901, #00c2de, #fad717, teal;
 
 $light-bg-color: var(--light-bg-color);
 $dark-bg-color: var(--dark-bg-color);
@@ -51,6 +94,7 @@ $main-color-rgba-50: var(--main-color-rgba-50);
 $main-font: var(--main-font);
 $header-font: var(--header-font);
 $font-size: var(--font-size);
+
 
 $adaptive-width-pc: 1024px;
 $adaptive-width-tablet: 768px;

@@ -13,8 +13,10 @@ const checks = {
 };
 
 export default class GameState {
-  constructor(difficulty) {
+  constructor(difficulty, onWin, onLose) {
     this.difficulty = difficulty;
+    this.onWin = onWin;
+    this.onLose = onLose;
     this.state = this._generateInitialMatrix();
     this._generateMines();
     this._fillGameStateWithNumbers();
@@ -48,14 +50,13 @@ export default class GameState {
     if (cell.isFlagged) {
       return;
     }
-    if (cell.isOpened) {
-      if (cell.isNumber) {
-        const cells = this.getHighlightedCells(i, j);
-        if (cells.length === 0 || cell.value > this.countFlagsAround(i, j)) {
-          return;
-        }
-        cells.forEach(([i, j]) => this.openCell(i, j));
+    if (cell.isOpened && cell.isNumber) {
+      const cells = this.getHighlightedCells(i, j);
+      if (cells.length === 0 || cell.value > this.countFlagsAround(i, j)) {
+        return;
       }
+      cells.forEach(([i, j]) => this.openCell(i, j));
+
       return;
     }
     cell.state = Cell.STATE_OPENED;

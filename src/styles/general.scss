@@ -1,19 +1,19 @@
-*, ::before, ::after {
+*, h1, ::before, ::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  font-family: $main-font;
-  font-size: $font-size;
-  color: $dark-text-color;
-  background-color: $light-bg-color;
+  font-family: var(--main-font);
+  font-size: var(--font-size);
+  color: var(--text-color);
+  background-color: var(--color-tone-11);
 }
 
 a {
   text-decoration: none;
-  color: $dark-text-color;
+  color: var(--color-tone-1);
   transition: 0.2s;
 }
 
@@ -29,27 +29,49 @@ ul {
   list-style: none;
 }
 
-h1 {
-  text-align: center;
-}
-
-.game {
-  width: 100%;
+.main {
   display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .container {
   max-width: calc(#{$container-width} + 2 * #{$container-padding});
   margin: 0 auto;
   padding: 0 $container-padding;
+  position: relative;
+  min-height: 100vh;
+  padding-top: calc(#{$header-height} + #{$container-padding});
+  padding-bottom: calc(#{$footer-height} + #{$container-padding});
+}
+
+.button {
+  width: 48px;
+  height: 48px;
+  font-size: 32px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  outline: none;
+  background: transparent;
+  color: var(--btn-color);
+  cursor: pointer;
+  transition: 0.1s ease-in;
+
+  &:focus {
+    border: 1px solid var(--btn-bg-focus);
+  }
+
+  &:hover {
+    color: var(--btn-color-hover);
+  }
+
+  &:active {
+    color: var(--btn-color-active);
+  }
 }
 
 .rsschool-logo {
   display: block;
   width: 120px;
-  margin-right: 40px;
+  // margin-right: 40px;
 
   .st0, .st1, .st2, .st3, .st4, .st5, .st6, .st8, .st9 {
     fill: $light-bg-color;
@@ -71,12 +93,12 @@ h1 {
     fill: $light-bg-color;
     stroke: $dark-text-color;
     stroke-width: 4px;
-    transition: $animation-duration ease-in;
+    transition: 0.1s ease-in;
   }
 
   &:hover {
     .logo-path {
-      fill: $highlight-color;
+      fill: $main-color;
     }
   }
 }
