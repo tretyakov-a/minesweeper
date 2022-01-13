@@ -9,8 +9,8 @@ export default class GameField {
     this.gameState = gameState;
     this.cells = {};
     this.highlightedCells = null;
-    
-    this.flagsCounter = document.querySelector('.game__flags-counter');
+
+    this.flagsCounter = document.querySelector('.game__flags-counter-value');
   }
 
   render = () => {

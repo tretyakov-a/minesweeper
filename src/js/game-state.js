@@ -20,7 +20,7 @@ export default class GameState extends Emmiter {
     this.difficulty = difficulty;
     this.onWin = onWin;
     this.onLose = onLose;
-    this.isGameStart = false;
+    this.isGameRunning = false;
     this.flagsCounter = this.difficulty.mines;
     this.minesFlaggedCounter = 0;
   }
@@ -75,20 +75,44 @@ export default class GameState extends Emmiter {
   }
 
   reveal = (cellKey) => {
-    if (!this.isGameStart) {
+    if (!this.isGameRunning) {
+      this.isGameRunning = true;
       this.generateState(cellKey);
+      this.emit('gameStarted');
     }
     this.openCell(cellKey);
   }
 
+  openAll = () => {
+    for (let rowIdx = 0; rowIdx < this.state.length; rowIdx += 1) {
+      for (let colIdx = 0; colIdx < this.state[rowIdx].length; colIdx += 1) {        
+        const cellKey = new CellKey(rowIdx, colIdx);
+        const cell = this.getCell(cellKey);
+        if (!cell.isFlagged && cell.isClosed) {
+          cell.state = Cell.STATE_OPENED;
+        }
+      }
+    }
+  }
+
   handleMineFlagged = (n) => {
+    if (!this.isGameRunning) {
+      return;
+    }
     this.minesFlaggedCounter += n;
     if (this.minesFlaggedCounter === this.difficulty.mines) {
+      this.isGameRunning = false;
+      this.openAll();
       this.emit('win');
     }
   }
 
   handleLose = (data) => {
+    if (!this.isGameRunning) {
+      return;
+    }
+    this.isGameRunning = false;
+    this.openAll();
     this.emit('lose', {
       mineKey: data,
       wrongFlagsKeys: this._findWrongFlags(),
@@ -117,7 +141,6 @@ export default class GameState extends Emmiter {
   }
 
   generateState = (cellKey) => {
-    this.isGameStart = true;
     this._generateMines(cellKey);
     this._generateNumbers();
   }
@@ -126,7 +149,7 @@ export default class GameState extends Emmiter {
     if (newDifficulty !== undefined) {
       this.difficulty = newDifficulty;
     }
-    this.isGameStart = false;
+    this.isGameRunning = false;
     this.flagsCounter = this.difficulty.mines;
     this.minesFlaggedCounter = 0;
     this.state = this._generateInitialMatrix();

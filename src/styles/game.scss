@@ -15,7 +15,9 @@
 
   &__timer,
   &__flags-counter {
-    font-size: 24px;
+    font-size: 20px;
+    color: var(--color-tone-4);
+    flex: 1 0 10%;
   }
 
   &__indicator {
@@ -23,7 +25,23 @@
   }
 
   &__flags-counter {
-    
+    display: inline-flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  &__panel-icon {
+    display: inline-block;
+    width: 20px;
+
+    &_flag {
+      width: 20px;
+      height: 20px;
+      margin-left: 5px;
+      background: no-repeat url("../assets/flag.svg");
+      background-size: 70%;
+      background-position: center top 3px;
+    }
   }
 }
 

@@ -4,6 +4,8 @@ import { options } from './js/constants';
 import GameState from './js/game-state';
 import GameField from './js/game-field';
 import renderTopPanel from './templates/game-top-panel.ejs';
+import Timer from './js/timer';
+import { renderNumber } from './js/helpers';
 
 const currentDifficulty = options.difficulty.easy;
 
@@ -18,14 +20,22 @@ gameContainer.insertAdjacentHTML('afterbegin', renderTopPanel());
 const gameField = new GameField(currentDifficulty, gameState);
 
 const resetBtn = document.querySelector('.reset-btn');
-const gameTimer = document.querySelector('.game__timer');
+const gameTimerLabel = document.querySelector('.game__timer-value');
+const gameTimer = new Timer();
+gameTimer.subscribe('change', updateTimerLabel);
+gameState.subscribe('gameStarted', () => gameTimer.start());
 
 resetBtn.addEventListener('click', resetGame);
 
 resetGame();
 
+function updateTimerLabel(time) {
+  gameTimerLabel.textContent = renderNumber(time);
+}
+
 function resetGame() {
   gameState.reset();
+  gameTimer.reset();
   if (gameField.render()) {
     gameContainer.removeChild(gameField.render());
   }
@@ -35,11 +45,13 @@ function resetGame() {
 }
 
 function handleWin() {
+  gameTimer.stop();
   resetBtn.classList.add('reset-btn_win');
   console.log('Its WIN');
 }
 
 function handleLose(data) {
+  gameTimer.stop();
   resetBtn.classList.add('reset-btn_lose');
   console.log('Its LOSE', data);
   gameField.handleLose(data);

@@ -53,14 +53,14 @@
     }
 
     &_flagged {
-      background: url("../assets/image2vector.svg"), var(--cell-flagged-bg);
+      background: url("../assets/flag.svg"), var(--cell-flagged-bg);
       background-repeat: no-repeat;
       background-position: center center;
       background-size: 60%;
     }
 
     &_wrongly-flagged {
-      background: url("../assets/image2vector.svg"), var(--cell-mine-bg);
+      background: url("../assets/flag.svg"), var(--cell-mine-bg);
       background-repeat: no-repeat;
       background-position: center center;
       background-size: 60%;
