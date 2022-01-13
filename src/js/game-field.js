@@ -1,6 +1,7 @@
 import Cell from './cell';
 import CellKey from './cell-key';
 import { GAME_FIELD_CLASS, CELL_CLASS, CELL_MODIFICATORS, MOUSE } from './constants';
+import { renderNumber } from './helpers';
 
 export default class GameField {
   constructor(difficulty, gameState) {
@@ -9,10 +10,11 @@ export default class GameField {
     this.cells = {};
     this.highlightedCells = null;
 
-    this.gameField = this._createTable();
-    this.gameField.addEventListener('mousedown', this.handleGameFieldMouseDown);
-    this.gameField.addEventListener('mouseup', this.handleGameFieldMouseUp);
-    this.gameField.addEventListener('contextmenu', this.handleGameFieldRightClick);
+    this.gameTimer = document.querySelector('.game__timer');
+    this.flagsCounter = document.querySelector('.game__flags-counter');
+
+    // this.gameField = this._createTable();
+    // this.reset();
   }
 
   render = () => {
@@ -51,6 +53,8 @@ export default class GameField {
       return CELL_MODIFICATORS.number + value;
     } else if (value === Cell.VALUE_MINE) {
       return CELL_MODIFICATORS.mine;
+    } else if (value === Cell.VALUE_EMPTY) {
+      return CELL_MODIFICATORS.empty;
     }
   }
   
@@ -79,6 +83,38 @@ export default class GameField {
     })
   }
   
+  reset = (newDifficulty) => {    
+    if (newDifficulty !== undefined) {
+      this.difficulty = newDifficulty;
+    }
+    this.gameField = this._createTable();
+    this.gameField.addEventListener('mousedown', this.handleGameFieldMouseDown);
+    this.gameField.addEventListener('mouseup', this.handleGameFieldMouseUp);
+    this.gameField.addEventListener('contextmenu', this.handleGameFieldRightClick);
+
+    this.flagsCounter.textContent = renderNumber(this.gameState.flagsCounter);
+
+    // Object.keys(this.cells).forEach(key => {
+    //   const cell = this.cells[key];
+    //   cell.classList.remove(...cell.classList);
+    //   cell.classList.add(CELL_CLASS);
+    //   cell.classList.add(CELL_MODIFICATORS.closed);  
+    // });
+  }
+
+  handleLose = ({ mineKey, wrongFlagsKeys }) => {
+    wrongFlagsKeys.forEach(key => {
+      this.cells[key].classList.replace(
+        CELL_MODIFICATORS.flagged, 
+        CELL_MODIFICATORS.wronglyFlagged
+      );
+    });
+    
+    this.gameField.removeEventListener('mousedown', this.handleGameFieldMouseDown);
+    this.gameField.removeEventListener('mouseup', this.handleGameFieldMouseUp);
+    this.gameField.removeEventListener('contextmenu', this.handleGameFieldRightClick);
+  }
+
   handleGameFieldMouseUp = (e) => {
     const cellEl = e.target.closest(`.${CELL_CLASS}`);
     if (!cellEl) {
@@ -90,16 +126,14 @@ export default class GameField {
       if (!this.gameState.isGameStart) {
         this.gameState.generateState(cellKey);
       }
-
-      this.gameState.openCell(cellKey);
-
-      if (cell.isMined) {
-        console.log('You`r looser!');
-      }
+      this.gameState.reveal(cellKey);
     }
-    if (e.button === MOUSE.RIGHT) {
-      this.gameState.flagCell(cellKey);
+
+    if (e.button === MOUSE.RIGHT && (cell.isFlagged || cell.isClosed)) {
+      const flagsCounter = this.gameState.flagCell(cellKey);
+      this.flagsCounter.textContent = renderNumber(flagsCounter);
     }
+
     this.applyState();
   }
   

@@ -34,9 +34,10 @@
     &_number-3, &_number-4,
     &_number-5, &_number-6,
     &_number-7, &_number-8,
-    &_flagged {
+    &_flagged, &_wrongly-flagged {
       font-weight: bold;
       font-size: 22px;
+
       &::before {
         position: absolute;
         top: -2px;
@@ -56,8 +57,13 @@
       background-repeat: no-repeat;
       background-position: center center;
       background-size: 60%;
+    }
 
-      color: $highlight-color;
+    &_wrongly-flagged {
+      background: url("../assets/image2vector.svg"), var(--cell-mine-bg);
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: 60%;
     }
 
     &_highlighted {
@@ -74,7 +80,7 @@
     }
 
     &_mine {
-      background: url("../assets/mine.svg"), var(--cell-opened-bg);
+      background: url("../assets/mine.svg"), var(--cell-mine-bg);
       background-repeat: no-repeat;
       background-position: center center;
       background-size: 80%;

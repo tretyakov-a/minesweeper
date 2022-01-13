@@ -26,6 +26,7 @@ export const setModificator = name => `${CELL_CLASS}_${name}`;
 export const CELL_MODIFICATORS = {
   closed: setModificator('closed'),
   flagged: setModificator('flagged'),
+  wronglyFlagged: setModificator('wrongly-flagged'),
   empty: setModificator('empty'),
   mine: setModificator('mine'),
   number: setModificator('number-'),

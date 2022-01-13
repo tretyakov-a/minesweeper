@@ -14,7 +14,7 @@
   }
 
   &__timer,
-  &__mines-counter {
+  &__flags-counter {
     font-size: 24px;
   }
 
@@ -22,7 +22,7 @@
 
   }
 
-  &__mines-counter {
+  &__flags-counter {
     
   }
 }
@@ -40,10 +40,14 @@
   }
 
   &_win {
-    content: "\f599";
+    &::before {
+      content: "\f599";
+    }
   }
 
   &_lose {
-    content: "\f57a";
+    &::before {
+      content: "\f57a";
+    }
   }
 }

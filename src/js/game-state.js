@@ -1,6 +1,7 @@
 import { randomNumber } from './helpers';
 import Cell from './cell';
 import CellKey from './cell-key';
+import Emmiter from './emmiter';
 
 const checks = {
   topLeft: [-1, -1],
@@ -13,13 +14,15 @@ const checks = {
   bottomRight: [1, 1]
 };
 
-export default class GameState {
+export default class GameState extends Emmiter {
   constructor(difficulty, onWin, onLose) {
+    super();
     this.difficulty = difficulty;
     this.onWin = onWin;
     this.onLose = onLose;
     this.isGameStart = false;
-    this.clearState();
+    this.flagsCounter = this.difficulty.mines;
+    // this.clearState();
   }
 
   getCell = (cellKey) => {
@@ -39,30 +42,75 @@ export default class GameState {
       return;
     }
     if (cell.isFlagged) {
+      this.flagsCounter += 1;
       cell.state = Cell.STATE_CLOSED;
     } else {
+      this.flagsCounter -= 1;
       cell.state = Cell.STATE_FLAGGED
     }
+    this.checkStateForWin();
+    return this.flagsCounter;
   }
-  
-  openCell = (cellKey) => {
-    const cell = this.getCell(cellKey);
-    if (cell.isFlagged) {
-      return;
-    }
-    if (cell.isOpened && cell.isNumber) {
-      const cells = this.getHighlightedCells(cellKey);
-      if (cells.length === 0 || cell.value > this.countFlagsAround(cellKey)) {
+
+  reveal = (cellKey) => {
+    const openCell = (cellKey) => {
+      const cell = this.getCell(cellKey);
+      if (cell.isFlagged || (cell.isOpened && (cell.isMined || cell.isEmpty))) {
         return;
       }
-      cells.forEach(this.openCell);
+  
+      if (cell.isOpened && cell.isNumber) {
+        const cells = this.getHighlightedCells(cellKey);
+        if (cells.length === 0 || cell.value > this.countFlagsAround(cellKey)) {
+          return;
+        }
+        cells.forEach(openCell);
+        return;
+      }
+  
+      cell.state = Cell.STATE_OPENED;
+  
+      if (cell.isEmpty) {
+        this._revealEmptySpace(cellKey);
+      }
+    }
 
-      return;
+    openCell(cellKey);
+    this.checkStateForWin();
+  }
+
+  checkStateForWin = () => {
+    let foundMinesCounter = 0;
+    let checkedCellsCounter = 0;
+
+    for (let rowIdx = 0; rowIdx < this.state.length; rowIdx += 1) {
+      for (let colIdx = 0; colIdx < this.state[rowIdx].length; colIdx += 1) {
+        const cellKey = new CellKey(rowIdx, colIdx);
+        const cell = this.getCell(cellKey);
+        checkedCellsCounter += 1;
+        // if (cell.isOpened && cell.isMined) {
+        //   return this.handleLose(cellKey);
+        // }
+        if (cell.isClosed && cell.isMined) {
+          console.log(checkedCellsCounter);
+          return;
+        }
+        if (cell.isFlagged && cell.isMined) {
+          foundMinesCounter += 1;
+        }
+      }
     }
-    cell.state = Cell.STATE_OPENED;
-    if (cell.isEmpty) {
-      this._revealEmptySpace(cellKey);
+    console.log(checkedCellsCounter, 'MINES=', foundMinesCounter);
+    if (foundMinesCounter === this.difficulty.mines) {
+      this.emit('win');
     }
+  }
+
+  handleLose = (data) => {
+    this.emit('lose', {
+      mineKey: data,
+      wrongFlagsKeys: this._findWrongFlags(),
+    });
   }
 
   countFlagsAround = (cellKey) => {
@@ -96,9 +144,27 @@ export default class GameState {
     this._generateNumbers();
   }
 
-  clearState = () => {
+  clearState = (newDifficulty) => {
+    if (newDifficulty !== undefined) {
+      this.difficulty = newDifficulty;
+    }
     this.isGameStart = false;
+    this.flagsCounter = this.difficulty.mines;
     this.state = this._generateInitialMatrix();
+  }
+
+  _findWrongFlags = () => {
+    const wrongFlagsKeys = [];
+    for (let rowIdx = 0; rowIdx < this.state.length; rowIdx += 1) {
+      for (let colIdx = 0; colIdx < this.state[rowIdx].length; colIdx += 1) {
+        const cellKey = new CellKey(rowIdx, colIdx);
+        const cell = this.getCell(cellKey);
+        if (cell.isFlagged && !cell.isMined) {
+          wrongFlagsKeys.push(cellKey);
+        }
+      }
+    }
+    return wrongFlagsKeys;
   }
 
   _revealEmptySpace = (startCellKey) => {
@@ -129,7 +195,8 @@ export default class GameState {
     for (let rowIdx = 0; rowIdx < height; rowIdx += 1) {
       matrix.push(new Array(width).fill(null));
       for (let colIdx = 0; colIdx < width; colIdx += 1) {
-        matrix[rowIdx][colIdx] = new Cell();
+        const cellKey = new CellKey(rowIdx, colIdx);
+        matrix[rowIdx][colIdx] = new Cell(cellKey);
       }
     }
     return matrix;
@@ -147,7 +214,9 @@ export default class GameState {
         )
       } while (mines[newCellKey.value] || newCellKey.value === excludedCellKey.value);
       mines[newCellKey.value] = 1;
-      this.getCell(newCellKey).value = Cell.VALUE_MINE;
+      const cell = this.getCell(newCellKey);
+      cell.value = Cell.VALUE_MINE;
+      cell.subscribe('mineOpened', this.handleLose);
     }
   }
 

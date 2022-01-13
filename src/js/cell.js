@@ -1,8 +1,15 @@
+import Emmiter from './emmiter';
 
-export default class Cell {
-  constructor() {
+export default class Cell extends Emmiter {
+  constructor(key) {
+    super();
     this.state = Cell.STATE_CLOSED;
     this.value = Cell.VALUE_EMPTY;
+    this.key = key;
+  }
+
+  getKey () {
+    return this.key.value;
   }
 
   get state() {
@@ -11,6 +18,9 @@ export default class Cell {
 
   set state(newState) {
     this._state = newState;
+    if (this.value === Cell.VALUE_MINE && newState === Cell.STATE_OPENED) {
+      this.emit('mineOpened', this);
+    }
   }
 
   get value() {
