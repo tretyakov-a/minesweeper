@@ -6,6 +6,7 @@ import GameField from './js/game-field';
 import renderTopPanel from './templates/game-top-panel.ejs';
 import Timer from './js/timer';
 import { renderNumber } from './js/helpers';
+import initMenuTabs from './js/menu-tabs';
 
 const currentDifficulty = options.difficulty.easy;
 
@@ -28,6 +29,7 @@ gameState.subscribe('gameStarted', () => gameTimer.start());
 resetBtn.addEventListener('click', resetGame);
 
 resetGame();
+initMenuTabs();
 
 function updateTimerLabel(time) {
   gameTimerLabel.textContent = renderNumber(time);

@@ -8,9 +8,14 @@
   margin: 0 auto;
   border-bottom: 1px solid var(--color-tone-8);
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  &__menu-container {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+  }
 
   &__title {
     text-align: center;
@@ -22,10 +27,109 @@
 
   &__help-btn, &__menu {
     flex: 1 0 10%;
+    position: relative;
   }
 }
 
 .header-menu {
   display: flex;
   justify-content: flex-end;
+
+  &__item {
+    position: relative;
+  }
+}
+
+.menu-tabs {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  top: var(--header-height);
+  width: 100%;
+  height: calc(100vh - var(--header-height) - var(--footer-height) - 20px);
+  border: 1px solid var(--color-tone-8);
+  border-top: none;
+
+  @keyframes menuTabSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
+
+  @keyframes menuTabSlideOut {
+    from {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+  }
+
+  &_show {
+    display: block;
+    animation: ease menuTabSlideIn forwards;
+    animation-duration: 0.4s;
+  }
+
+  &_hide {
+    display: block;
+    animation: ease menuTabSlideOut forwards;
+    animation-duration: 0.4s;
+  }
+
+  &__item {
+    height: 100%;
+    display: none;
+    z-index: 2;
+    background: var(--color-tone-11);
+    box-shadow: 0px 0px 2px 0px var(--color-tone-4);
+    overflow: hidden;
+
+    &_show {
+      display: block;
+    }
+  }
+
+  &__close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    z-index: 3;
+  }
+
+  &__title {
+    text-align: center;
+    margin: 20px;
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  &__content {
+    padding: 20px;
+    padding-top: 0px;
+    height: calc(100% - 92px);
+    overflow-x: auto;
+
+    p {
+      font-size: 16px;
+      line-height: 24px;
+      text-align: justify;
+      color: var(--color-tone-4);
+
+      &:not(:last-child) {
+        margin-bottom: 24px;
+      }
+    }
+
+  }
 }

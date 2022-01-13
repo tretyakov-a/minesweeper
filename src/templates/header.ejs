@@ -1,22 +1,66 @@
 <header class="header">
-  <div class="header__help-btn">
-    <button class="help-btn button">
-      <i class="far fa-question-circle"></i>
-    </button>
+  <div class="header__menu-container">
+    <div class="header__help-btn">
+      <button class="help-btn button" data-tab-link="help">
+        <i class="far fa-question-circle"></i>
+      </button>
+    </div>
+    <h1 class="header__title">Minesweeper</h1>
+    <div class="header__menu">
+      <ul class="header-menu">
+        <li class="header-menu__item">
+          <button class="stats-btn button" data-tab-link="stats">
+            <i class="far fa-chart-bar"></i>
+          </button>
+        </li>
+        <li class="header-menu__item">
+          <button class="settings-btn button" data-tab-link="settings">
+            <i class="fas fa-cog"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
   </div>
-  <h1 class="header__title">Minesweeper</h1>
-  <div class="header__menu">
-    <ul class="header-menu">
-      <li class="header-menu__item">
-        <button class="stats-btn button">
-          <i class="far fa-chart-bar"></i>
-        </button>
-      </li>
-      <li class="header-menu__item">
-        <button class="settings-btn button">
-          <i class="fas fa-cog"></i>
-        </button>
-      </li>
-    </ul>
+  
+  <div class="menu-tabs">
+    <button class="menu-tabs__close-btn button">
+      <i class="far fa-times-circle"></i>
+    </button>
+    <div class="menu-tabs__item" data-tab="help">
+      <h2 class="menu-tabs__title">How to play</h2>
+      <div class="menu-tabs__content">
+        <p>In Minesweeper, mines (that resemble naval mines in the classic theme) are scattered throughout a board, which is divided into cells. Cells have three states: uncovered, covered and flagged. A covered cell is blank and clickable, while an uncovered cell is exposed. Flagged cells are those marked by the player to indicate a potential mine location.</p>
+        <p>A player left-clicks a cell to uncover it. If a player uncovers a mined cell, the game ends, as there is only 1 life per game. Otherwise, the uncovered cell displays either a number, indicating the number of mines diagonally and/or adjacent to it, or a blank tile (or "0"), and all adjacent non-mined cells will automatically be uncovered. Right-clicking on a cell will flag it, causing a flag to appear on it. Flagged cells are still considered covered, and a player can click on them to uncover them, although typically they must first be unflagged with an additional right-click.</p>
+        <p>The first click in any game will never be a mine.</p>
+        <p>To win the game, players must uncover all non-mine cells, at which point, the timer is stopped. Flagging all the mined cells is not required</p>
+      </div>
+    </div>
+    <div class="menu-tabs__item" data-tab="stats">
+      <h2 class="menu-tabs__title">Statistics</h2>
+      <div class="menu-tabs__content">
+        Games played: 0
+        Best time: 0
+      </div>
+    </div>
+    <div class="menu-tabs__item" data-tab="settings">
+      <h2 class="menu-tabs__title">Settings</h2>
+      <div class="menu-tabs__content">
+        <form action="/">
+          <div>
+            <input type="radio" name="difficulty" value="easy">
+            <span>Easy</span>
+          </div>
+          <div>
+            <input type="radio" name="difficulty" value="medium">
+            <span>Medium</span>
+          </div>
+          <div>
+            <input type="radio" name="difficulty" value="expert">
+            <span>Expert</span>
+          </div>
+
+        </form>
+      </div>
+    </div>
   </div>
 </header>

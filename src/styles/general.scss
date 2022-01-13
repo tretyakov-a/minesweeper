@@ -55,9 +55,9 @@ ul {
   cursor: pointer;
   transition: 0.1s ease-in;
 
-  &:focus {
-    border: 1px solid var(--btn-bg-focus);
-  }
+  // &:focus {
+  //   border: 1px solid var(--btn-bg-focus);
+  // }
 
   &:hover {
     color: var(--btn-color-hover);

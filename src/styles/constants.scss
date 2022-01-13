@@ -30,34 +30,6 @@
   --btn-color-active: var(--color-tone-2);
   --btn-bg-focus: var(--color-tone-9);
 
-  --light-text-color: white;
-  --dark-text-color: black;
-  --header-color: #bffcfb;
-  --highlight-color: #ff8749;
-  --dark-bg-color: #030303;
-  --light-bg-color: white;
-  
-  --main-color: teal;
-  --main-color-2: #52b5b5;
-  --main-color-contrast: #bffcfb;
-  --main-color-rgba-80: rgba(0, 128, 128, 0.8);
-  --main-color-rgba-50: rgba(0, 128, 128, 0.5);
-
-  // --light-text-color: white;
-  // --dark-text-color: black;
-  // --header-color: #bffcfb;
-  // --highlight-color: #ff8749;
-  // --dark-bg-color: #1d2025;
-  // --light-bg-color: white;
-  
-  // --btn-bg-1: #EDC298;
-  // --btn-bg-2: #1BDECD;
-  // --main-color: teal;
-  // --main-color-2: #52b5b5;
-  // --main-color-contrast: #bffcfb;
-  // --main-color-rgba-80: rgba(0, 128, 128, 0.8);
-  // --main-color-rgba-50: rgba(0, 128, 128, 0.5);
-
   --main-font: "Clear Sans", sans-serif;
   --header-font: "Clear Sans", sans-serif;
   --font-size: 16px;
@@ -70,14 +42,13 @@
   --top-panel-height: 48px;
 }
 
+$number-colors: #00418d, #00ba71, #f43545, #5f2879, #ff8901, #00c2de, #fad717, teal;
+
 $container-width: var(--container-width);
 $container-padding: var(--container-padding);
 $footer-height: var(--footer-height);
 $header-height: var(--header-height);
 $animation-duration: 0.2s;
-
-// $number-colors: blue, green, red, purple, orange, gray, teal, yellow;
-$number-colors: #00418d, #00ba71, #f43545, #5f2879, #ff8901, #00c2de, #fad717, teal;
 
 $light-bg-color: var(--light-bg-color);
 $dark-bg-color: var(--dark-bg-color);
