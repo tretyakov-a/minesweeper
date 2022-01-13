@@ -17,10 +17,18 @@ export default class Cell extends Emmiter {
   }
 
   set state(newState) {
-    this._state = newState;
-    if (this.value === Cell.VALUE_MINE && newState === Cell.STATE_OPENED) {
-      this.emit('mineOpened', this);
+    if (this.value === Cell.VALUE_MINE) {
+      if (newState === Cell.STATE_OPENED) {
+        this.emit('mineOpened', this);
+      }
+      if (newState === Cell.STATE_FLAGGED) {
+        this.emit('mineFlagged', 1);
+      }
+      if (newState === Cell.STATE_CLOSED) {
+        this.emit('mineFlagged', -1);
+      }
     }
+    this._state = newState;
   }
 
   get value() {

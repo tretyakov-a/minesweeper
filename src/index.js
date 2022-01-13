@@ -16,16 +16,16 @@ const gameContainer = document.querySelector('.game');
 gameContainer.insertAdjacentHTML('afterbegin', renderTopPanel());
 
 const gameField = new GameField(currentDifficulty, gameState);
-// gameContainer.insertAdjacentElement('beforeend', gameField.render());
 
 const resetBtn = document.querySelector('.reset-btn');
+const gameTimer = document.querySelector('.game__timer');
 
 resetBtn.addEventListener('click', resetGame);
 
 resetGame();
 
 function resetGame() {
-  gameState.clearState();
+  gameState.reset();
   if (gameField.render()) {
     gameContainer.removeChild(gameField.render());
   }

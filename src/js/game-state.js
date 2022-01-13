@@ -22,7 +22,7 @@ export default class GameState extends Emmiter {
     this.onLose = onLose;
     this.isGameStart = false;
     this.flagsCounter = this.difficulty.mines;
-    // this.clearState();
+    this.minesFlaggedCounter = 0;
   }
 
   getCell = (cellKey) => {
@@ -39,7 +39,7 @@ export default class GameState extends Emmiter {
   flagCell = (cellKey) => {
     const cell = this.getCell(cellKey);
     if (cell.isOpened) {
-      return;
+      return this.flagsCounter;
     }
     if (cell.isFlagged) {
       this.flagsCounter += 1;
@@ -48,60 +48,42 @@ export default class GameState extends Emmiter {
       this.flagsCounter -= 1;
       cell.state = Cell.STATE_FLAGGED
     }
-    this.checkStateForWin();
+
     return this.flagsCounter;
   }
 
-  reveal = (cellKey) => {
-    const openCell = (cellKey) => {
-      const cell = this.getCell(cellKey);
-      if (cell.isFlagged || (cell.isOpened && (cell.isMined || cell.isEmpty))) {
-        return;
-      }
-  
-      if (cell.isOpened && cell.isNumber) {
-        const cells = this.getHighlightedCells(cellKey);
-        if (cells.length === 0 || cell.value > this.countFlagsAround(cellKey)) {
-          return;
-        }
-        cells.forEach(openCell);
-        return;
-      }
-  
-      cell.state = Cell.STATE_OPENED;
-  
-      if (cell.isEmpty) {
-        this._revealEmptySpace(cellKey);
-      }
+  openCell = (cellKey) => {
+    const cell = this.getCell(cellKey);
+    if (cell.isFlagged || (cell.isOpened && (cell.isMined || cell.isEmpty))) {
+      return;
     }
 
-    openCell(cellKey);
-    this.checkStateForWin();
+    if (cell.isOpened && cell.isNumber) {
+      const cells = this.getHighlightedCells(cellKey);
+      if (cells.length === 0 || cell.value > this.countFlagsAround(cellKey)) {
+        return;
+      }
+      cells.forEach(this.openCell);
+      return;
+    }
+
+    cell.state = Cell.STATE_OPENED;
+
+    if (cell.isEmpty) {
+      this._revealEmptySpace(cellKey);
+    }
   }
 
-  checkStateForWin = () => {
-    let foundMinesCounter = 0;
-    let checkedCellsCounter = 0;
-
-    for (let rowIdx = 0; rowIdx < this.state.length; rowIdx += 1) {
-      for (let colIdx = 0; colIdx < this.state[rowIdx].length; colIdx += 1) {
-        const cellKey = new CellKey(rowIdx, colIdx);
-        const cell = this.getCell(cellKey);
-        checkedCellsCounter += 1;
-        // if (cell.isOpened && cell.isMined) {
-        //   return this.handleLose(cellKey);
-        // }
-        if (cell.isClosed && cell.isMined) {
-          console.log(checkedCellsCounter);
-          return;
-        }
-        if (cell.isFlagged && cell.isMined) {
-          foundMinesCounter += 1;
-        }
-      }
+  reveal = (cellKey) => {
+    if (!this.isGameStart) {
+      this.generateState(cellKey);
     }
-    console.log(checkedCellsCounter, 'MINES=', foundMinesCounter);
-    if (foundMinesCounter === this.difficulty.mines) {
+    this.openCell(cellKey);
+  }
+
+  handleMineFlagged = (n) => {
+    this.minesFlaggedCounter += n;
+    if (this.minesFlaggedCounter === this.difficulty.mines) {
       this.emit('win');
     }
   }
@@ -134,22 +116,19 @@ export default class GameState extends Emmiter {
       }, []);
   }
 
-  setDifficulty = (newDifficulty) => {
-    this.difficulty = newDifficulty;
-  }
-
   generateState = (cellKey) => {
     this.isGameStart = true;
     this._generateMines(cellKey);
     this._generateNumbers();
   }
 
-  clearState = (newDifficulty) => {
+  reset = (newDifficulty) => {
     if (newDifficulty !== undefined) {
       this.difficulty = newDifficulty;
     }
     this.isGameStart = false;
     this.flagsCounter = this.difficulty.mines;
+    this.minesFlaggedCounter = 0;
     this.state = this._generateInitialMatrix();
   }
 
@@ -217,6 +196,7 @@ export default class GameState extends Emmiter {
       const cell = this.getCell(newCellKey);
       cell.value = Cell.VALUE_MINE;
       cell.subscribe('mineOpened', this.handleLose);
+      cell.subscribe('mineFlagged', this.handleMineFlagged);
     }
   }
 

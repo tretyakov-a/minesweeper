@@ -9,12 +9,8 @@ export default class GameField {
     this.gameState = gameState;
     this.cells = {};
     this.highlightedCells = null;
-
-    this.gameTimer = document.querySelector('.game__timer');
+    
     this.flagsCounter = document.querySelector('.game__flags-counter');
-
-    // this.gameField = this._createTable();
-    // this.reset();
   }
 
   render = () => {
@@ -93,13 +89,6 @@ export default class GameField {
     this.gameField.addEventListener('contextmenu', this.handleGameFieldRightClick);
 
     this.flagsCounter.textContent = renderNumber(this.gameState.flagsCounter);
-
-    // Object.keys(this.cells).forEach(key => {
-    //   const cell = this.cells[key];
-    //   cell.classList.remove(...cell.classList);
-    //   cell.classList.add(CELL_CLASS);
-    //   cell.classList.add(CELL_MODIFICATORS.closed);  
-    // });
   }
 
   handleLose = ({ mineKey, wrongFlagsKeys }) => {
@@ -121,19 +110,15 @@ export default class GameField {
       return;
     }
     const cellKey = new CellKey(cellEl.dataset.key);
-    const cell = this.gameState.getCell(cellKey);
-    if (e.button === MOUSE.LEFT && !cell.isFlagged) {
-      if (!this.gameState.isGameStart) {
-        this.gameState.generateState(cellKey);
-      }
+    if (e.button === MOUSE.LEFT) {
       this.gameState.reveal(cellKey);
     }
-
-    if (e.button === MOUSE.RIGHT && (cell.isFlagged || cell.isClosed)) {
+    if (e.button === MOUSE.RIGHT) {
       const flagsCounter = this.gameState.flagCell(cellKey);
       this.flagsCounter.textContent = renderNumber(flagsCounter);
     }
 
+    //TODO: apply only revealed cells
     this.applyState();
   }
   
