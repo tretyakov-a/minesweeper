@@ -1,5 +1,7 @@
+import { isClickOutside } from './helpers';
+
 const tabs = document.querySelectorAll('[data-tab]');
-const menuTabs = document.querySelector('.menu-tabs');
+const header = document.querySelector('.header');
 const animationDuration = 400;
 
 function handleMenuBtnClick(e) {
@@ -9,16 +11,23 @@ function handleMenuBtnClick(e) {
     if (btn.dataset.tabLink) {
       showTab(btn.dataset.tabLink);
     } else if (btn.classList.contains('menu-tabs__close-btn')) {
-      menuTabs.classList.replace('menu-tabs_show', 'menu-tabs_hide');
-      setTimeout(() => {
-        menuTabs.classList.remove('menu-tabs_hide');
-      }, animationDuration);
+      hideTabs();
     }
   }
 }
 
-function showTab(tabName) {
-  menuTabs.classList.add('menu-tabs_show');
+function hideTabs() {
+  header.classList.replace('header_show', 'header_hide');
+  setTimeout(() => {
+    header.classList.remove('header_hide');
+    showTab();
+  }, animationDuration);
+}
+
+function showTab(tabName = '') {
+  if (tabName !== '') {
+    header.classList.add('header_show');
+  }
 
   for (const tab of tabs) {
     tab.classList.remove('menu-tabs__item_show');
@@ -28,6 +37,13 @@ function showTab(tabName) {
   }
 }
 
+function handleDocumentClick(e) {
+  if (isClickOutside(e, ['header'])) {
+    hideTabs();
+  }
+}
+
 export default function init() {
   document.querySelector('.header').addEventListener('click', handleMenuBtnClick);
+  document.addEventListener('click', handleDocumentClick);
 }

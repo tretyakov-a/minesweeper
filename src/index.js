@@ -8,7 +8,7 @@ import Timer from './js/timer';
 import { renderNumber } from './js/helpers';
 import initMenuTabs from './js/menu-tabs';
 
-const currentDifficulty = options.difficulty.easy;
+const currentDifficulty = options.difficulty.expert;
 
 const gameState = new GameState(currentDifficulty);
 gameState.subscribe('win', handleWin);
