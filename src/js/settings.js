@@ -4,15 +4,8 @@ let handleDifficultyChange = null;
 
 function handleSettingsChange(e) {
   switch(e.target.name) {
-    case 'difficulty': changeDifficulty(e.target.value); break;
+    case 'difficulty': handleDifficultyChange(e, e.target.value); break;
     case 'dark-theme': setDarkTheme(e.target.checked); break;
-  }
-}
-
-function changeDifficulty(newDifficulty) {
-  console.log(newDifficulty);
-  if (handleDifficultyChange) {
-    handleDifficultyChange(newDifficulty);
   }
 }
 

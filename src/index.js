@@ -8,6 +8,7 @@ import Timer from './js/timer';
 import { renderNumber } from './js/helpers';
 import initMenuTabs from './js/menu-tabs';
 import initSettings from './js/settings';
+import { updateStatistics } from './js/statistics';
 
 let currentDifficulty = 'easy';
 
@@ -31,7 +32,10 @@ function updateTimerLabel(time) {
   gameTimerLabel.textContent = renderNumber(time);
 }
 
-const resetGame = (newDifficuty = 'easy') => {
+const resetGame = (e, newDifficuty = currentDifficulty) => {
+  if (currentDifficulty !== newDifficuty) {
+    currentDifficulty = newDifficuty;
+  }
   const difficulty = options.difficulty[newDifficuty];
   gameState.reset(difficulty);
   if (gameField.render()) {
@@ -43,18 +47,26 @@ const resetGame = (newDifficuty = 'easy') => {
   resetBtn.classList.remove('reset-btn_win', 'reset-btn_lose');
 }
 
+function createStatisticsData(result) {
+  return {
+    result,
+    difficulty: currentDifficulty,
+    time: gameTimer.getGameTime(),
+  };
+}
+
 function handleWin() {
   gameTimer.stop();
   resetBtn.classList.add('reset-btn_win');
   gameField.handleWin();
-  console.log('Its WIN');
+  updateStatistics(createStatisticsData('win'));
 }
 
 function handleLose(data) {
   gameTimer.stop();
   resetBtn.classList.add('reset-btn_lose');
   gameField.handleLose(data);
-  console.log('Its LOSE', data);
+  updateStatistics(createStatisticsData('lose'));
 }
 
 resetBtn.addEventListener('click', resetGame);

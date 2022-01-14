@@ -1,5 +1,5 @@
 import Emitter from './emmiter';
-import { renderNumber } from './helpers';
+import { renderTime } from './helpers';
 
 export default class Timer extends Emitter {
 
@@ -44,14 +44,14 @@ export default class Timer extends Emitter {
   stop() {
     this.isRunning = false;
     this.endTime = Date.now();
-    this.getGameTime();
   }
 
   getGameTime() {
-    const time = this.endTime - this.startTime;
-    const ms = renderNumber(time % 1000, 3);
-    const min = renderNumber(Math.floor(time / 1000 / 60), 2);
-    const sec = renderNumber(Math.floor(time / 1000) - min * 60, 2);
-    console.log(`${min}:${sec}:${ms}`);
+    return this.endTime - this.startTime;
+  }
+
+  renderGameTime() {
+    const time = this.getGameTime();
+    return renderTime(time);
   }
 }

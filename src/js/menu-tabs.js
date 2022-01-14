@@ -1,4 +1,5 @@
 import { isClickOutside } from './helpers';
+import { renderStatistics } from './statistics';
 
 const tabs = document.querySelectorAll('[data-tab]');
 const header = document.querySelector('.header');
@@ -32,6 +33,10 @@ function showTab(tabName = '') {
   for (const tab of tabs) {
     tab.classList.remove('menu-tabs__item_show');
     if (tab.dataset.tab === tabName) {
+      if (tabName === 'statistics') {
+        const html = renderStatistics();
+        tab.querySelector('.menu-tabs__content').innerHTML = html;
+      }
       tab.classList.add('menu-tabs__item_show');
     }
   }
