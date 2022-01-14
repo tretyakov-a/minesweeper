@@ -30,7 +30,8 @@
   --btn-color-active: var(--color-tone-2);
   --btn-bg-focus: var(--color-tone-9);
 
-  --main-font: "Clear Sans", sans-serif;
+  --main-font: "Clear Sans Regular", sans-serif;
+  --main-font-bold: "Clear Sans Bold", sans-serif;
   --header-font: "Clear Sans", sans-serif;
   --font-size: 16px;
 
@@ -40,6 +41,20 @@
   --footer-height: 60px;
   --header-max-width: 600px;
   --top-panel-height: 48px;
+}
+
+.dark-theme {
+  --color-tone-1: white;
+  --color-tone-2: #eceff1;
+  --color-tone-3: #cfd8dc;
+  --color-tone-4: #b0bec5;
+  --color-tone-5: #90a4ae;
+  --color-tone-6: #78909c;
+  --color-tone-7: #607d8b;
+  --color-tone-8: #546e7a;
+  --color-tone-9: #455a64;
+  --color-tone-10: #37474f;
+  --color-tone-11: #263238;
 }
 
 $number-colors: #00418d, #00ba71, #f43545, #5f2879, #ff8901, #00c2de, #fad717, teal;
@@ -66,7 +81,6 @@ $main-color-rgba-50: var(--main-color-rgba-50);
 $main-font: var(--main-font);
 $header-font: var(--header-font);
 $font-size: var(--font-size);
-
 
 $adaptive-width-pc: 1024px;
 $adaptive-width-tablet: 768px;

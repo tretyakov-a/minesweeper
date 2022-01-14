@@ -30,7 +30,8 @@ export default class GameField {
     const { width, height } = this.difficulty;
     const table = document.createElement('table');
     table.classList.add(GAME_FIELD_CLASS);
-  
+    this.cells = {};
+
     for (let rowIdx = 0; rowIdx < height; rowIdx += 1) {
       const row = document.createElement('tr');
       for (let colIdx = 0; colIdx < width; colIdx += 1) {

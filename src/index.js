@@ -7,10 +7,11 @@ import renderTopPanel from './templates/game-top-panel.ejs';
 import Timer from './js/timer';
 import { renderNumber } from './js/helpers';
 import initMenuTabs from './js/menu-tabs';
+import initSettings from './js/settings';
 
-const currentDifficulty = options.difficulty.expert;
+let currentDifficulty = 'easy';
 
-const gameState = new GameState(currentDifficulty);
+const gameState = new GameState(options.difficulty[currentDifficulty]);
 gameState.subscribe('win', handleWin);
 gameState.subscribe('lose', handleLose);
 
@@ -18,31 +19,27 @@ const gameContainer = document.querySelector('.game');
 
 gameContainer.insertAdjacentHTML('afterbegin', renderTopPanel());
 
-const gameField = new GameField(currentDifficulty, gameState);
+const gameField = new GameField(options.difficulty[currentDifficulty], gameState);
 
 const resetBtn = document.querySelector('.reset-btn');
 const gameTimerLabel = document.querySelector('.game__timer-value');
 const gameTimer = new Timer();
 gameTimer.subscribe('change', updateTimerLabel);
-gameState.subscribe('gamestart', () => gameTimer.start());
-
-resetBtn.addEventListener('click', resetGame);
-
-resetGame();
-initMenuTabs();
+gameState.subscribe('gamestart', gameTimer.start);
 
 function updateTimerLabel(time) {
   gameTimerLabel.textContent = renderNumber(time);
 }
 
-function resetGame() {
-  gameState.reset();
-  gameTimer.reset();
+const resetGame = (newDifficuty = 'easy') => {
+  const difficulty = options.difficulty[newDifficuty];
+  gameState.reset(difficulty);
   if (gameField.render()) {
     gameContainer.removeChild(gameField.render());
   }
-  gameField.reset();
+  gameField.reset(difficulty);
   gameContainer.insertAdjacentElement('beforeend', gameField.render());
+  gameTimer.reset();
   resetBtn.classList.remove('reset-btn_win', 'reset-btn_lose');
 }
 
@@ -59,3 +56,9 @@ function handleLose(data) {
   gameField.handleLose(data);
   console.log('Its LOSE', data);
 }
+
+resetBtn.addEventListener('click', resetGame);
+
+resetGame();
+initMenuTabs();
+initSettings(resetGame);

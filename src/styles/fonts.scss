@@ -1,9 +1,13 @@
 // @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding:wght@400;700&display=swap');
 
 @font-face {
-  font-family: "Clear Sans";
-  src: url("../assets/fonts/clear-sans/ClearSans-Bold.ttf") format("ttf"),
-       url("../assets/fonts/clear-sans/ClearSans-Regular.ttf") format("ttf"),
-       url("../assets/fonts/clear-sans/ClearSans-Bold.woff") format("woff"),
+  font-family: "Clear Sans Regular";
+  src: url("../assets/fonts/clear-sans/ClearSans-Regular.ttf") format("ttf"),
        url("../assets/fonts/clear-sans/ClearSans-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Clear Sans Bold";
+  src: url("../assets/fonts/clear-sans/ClearSans-Bold.ttf") format("ttf"),
+       url("../assets/fonts/clear-sans/ClearSans-Bold.woff") format("woff");
 }

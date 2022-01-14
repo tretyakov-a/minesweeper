@@ -1,0 +1,38 @@
+.settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+
+  &__subtitle {
+    font-weight: normal;
+    letter-spacing: 1px;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    padding: 0 10px;
+    background: transparent;
+    border-bottom: 1px solid var(--color-tone-6);
+    transition: 0.1s ease;
+
+    &:hover {
+      background: var(--color-tone-10);
+    }
+  }
+
+  &__difficulty-select {
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  &__dark-theme-checkbox {
+    cursor: pointer;
+  }
+}

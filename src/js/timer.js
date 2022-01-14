@@ -21,7 +21,7 @@ export default class Timer extends Emitter {
     this.emit('change', this.secondsCounter);
   }
 
-  start() {
+  start = () => {
     this.isRunning = true;
     this.startTime = Date.now();
     this.prevTime = this.startTime;

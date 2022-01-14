@@ -42,21 +42,7 @@
     <div class="menu-tabs__item" data-tab="settings">
       <h2 class="menu-tabs__title">Settings</h2>
       <div class="menu-tabs__content">
-        <form action="/">
-          <div>
-            <input type="radio" name="difficulty" value="easy">
-            <span>Easy</span>
-          </div>
-          <div>
-            <input type="radio" name="difficulty" value="medium">
-            <span>Medium</span>
-          </div>
-          <div>
-            <input type="radio" name="difficulty" value="expert">
-            <span>Expert</span>
-          </div>
-
-        </form>
+        <%- require('./settings.ejs')() %>
       </div>
     </div>
   </div>
