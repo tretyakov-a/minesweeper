@@ -80,6 +80,13 @@
     }
 
     &_mine {
+      background: url("../assets/mine.svg"), var(--cell-opened-bg);
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: 80%;
+    }
+
+    &_mine-blowned {
       background: url("../assets/mine.svg"), var(--cell-mine-bg);
       background-repeat: no-repeat;
       background-position: center center;

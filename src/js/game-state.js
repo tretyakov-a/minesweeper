@@ -78,7 +78,7 @@ export default class GameState extends Emmiter {
     if (!this.isGameRunning) {
       this.isGameRunning = true;
       this.generateState(cellKey);
-      this.emit('gameStarted');
+      this.emit('gamestart');
     }
     this.openCell(cellKey);
   }
@@ -107,14 +107,14 @@ export default class GameState extends Emmiter {
     }
   }
 
-  handleLose = (data) => {
+  handleLose = (cell) => {
     if (!this.isGameRunning) {
       return;
     }
     this.isGameRunning = false;
     this.openAll();
     this.emit('lose', {
-      mineKey: data,
+      mineKey: cell.key,
       wrongFlagsKeys: this._findWrongFlags(),
     });
   }
@@ -218,8 +218,8 @@ export default class GameState extends Emmiter {
       mines[newCellKey.value] = 1;
       const cell = this.getCell(newCellKey);
       cell.value = Cell.VALUE_MINE;
-      cell.subscribe('mineOpened', this.handleLose);
-      cell.subscribe('mineFlagged', this.handleMineFlagged);
+      cell.subscribe('mineopened', this.handleLose);
+      cell.subscribe('mineflagged', this.handleMineFlagged);
     }
   }
 

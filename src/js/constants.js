@@ -1,4 +1,4 @@
-export const options = {
+const options = {
   difficulty: {
     easy: {
       mines: 10,
@@ -18,24 +18,31 @@ export const options = {
   }
 }
 
-export const GAME_FIELD_CLASS = 'game-field';
-export const CELL_CLASS = `${GAME_FIELD_CLASS}__cell`;
+const GAME_FIELD_CLASS = 'game-field';
+const CELL_CLASS = `${GAME_FIELD_CLASS}__cell`;
 
-export const setModificator = name => `${CELL_CLASS}_${name}`;
+const setModificator = name => `${CELL_CLASS}_${name}`;
 
-export const CELL_MODIFICATORS = {
+const CELL_MODIFICATORS = {
   closed: setModificator('closed'),
   flagged: setModificator('flagged'),
   wronglyFlagged: setModificator('wrongly-flagged'),
   empty: setModificator('empty'),
   mine: setModificator('mine'),
+  mineBlowned: setModificator('mine-blowned'),
   number: setModificator('number-'),
   highlighted: setModificator('highlighted'),
 };
 
-export const MOUSE = {
+const MOUSE = {
   LEFT: 0,
   RIGHT: 2,
 };
 
-
+export {
+  options,
+  GAME_FIELD_CLASS,
+  CELL_CLASS,
+  CELL_MODIFICATORS,
+  MOUSE
+}

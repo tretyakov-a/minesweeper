@@ -24,7 +24,7 @@ const resetBtn = document.querySelector('.reset-btn');
 const gameTimerLabel = document.querySelector('.game__timer-value');
 const gameTimer = new Timer();
 gameTimer.subscribe('change', updateTimerLabel);
-gameState.subscribe('gameStarted', () => gameTimer.start());
+gameState.subscribe('gamestart', () => gameTimer.start());
 
 resetBtn.addEventListener('click', resetGame);
 
@@ -49,12 +49,13 @@ function resetGame() {
 function handleWin() {
   gameTimer.stop();
   resetBtn.classList.add('reset-btn_win');
+  gameField.handleWin();
   console.log('Its WIN');
 }
 
 function handleLose(data) {
   gameTimer.stop();
   resetBtn.classList.add('reset-btn_lose');
-  console.log('Its LOSE', data);
   gameField.handleLose(data);
+  console.log('Its LOSE', data);
 }

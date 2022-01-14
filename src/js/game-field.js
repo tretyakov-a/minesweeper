@@ -92,16 +92,30 @@ export default class GameField {
   }
 
   handleLose = ({ mineKey, wrongFlagsKeys }) => {
-    wrongFlagsKeys.forEach(key => {
-      this.cells[key].classList.replace(
-        CELL_MODIFICATORS.flagged, 
-        CELL_MODIFICATORS.wronglyFlagged
+    setTimeout(() => {
+      wrongFlagsKeys.forEach(key => {
+        this.cells[key].classList.replace(
+          CELL_MODIFICATORS.flagged, 
+          CELL_MODIFICATORS.wronglyFlagged
+        );
+      });
+  
+      this.cells[mineKey.value].classList.replace(
+        CELL_MODIFICATORS.mine,
+        CELL_MODIFICATORS.mineBlowned
       );
-    });
-    
+    })
+    this.removeEventListeners();
+  }
+
+  handleWin = () => {
+    this.removeEventListeners();
+  }
+  
+  removeEventListeners = () => {
     this.gameField.removeEventListener('mousedown', this.handleGameFieldMouseDown);
     this.gameField.removeEventListener('mouseup', this.handleGameFieldMouseUp);
-    this.gameField.removeEventListener('contextmenu', this.handleGameFieldRightClick);
+    // this.gameField.removeEventListener('contextmenu', this.handleGameFieldRightClick);
   }
 
   handleGameFieldMouseUp = (e) => {
