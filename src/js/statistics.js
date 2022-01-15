@@ -24,10 +24,15 @@ function loadFromLocalStorage() {
   return {};
 }
 
-function findMinTime(games) {
-  return games.length > 0 
-    ? games.reduce((min, game) => min > game.time ? game.time : min, games[0].time) 
-    : 0;
+function findMinTime(difficulty) {
+  const games = statistics[difficulty];
+  if (!games) {
+    return Infinity;
+  }
+  const wins = games.filter(game => game.result === 'win');
+  return wins.length > 0 
+    ? wins.reduce((min, game) => min > game.time ? game.time : min, wins[0].time) 
+    : Infinity;
 }
 
 function getStatisticsData(difficulty) {
@@ -36,7 +41,7 @@ function getStatisticsData(difficulty) {
     return '';
   }
   const wins = games.filter(game => game.result === 'win');
-  const minTime = findMinTime(wins);
+  const minTime = findMinTime(difficulty);
   return {
     difficulty,
     gamesNumber: games.length,
@@ -59,5 +64,6 @@ function renderStatistics() {
 
 export {
   updateStatistics,
-  renderStatistics
+  renderStatistics,
+  findMinTime
 }

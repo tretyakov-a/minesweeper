@@ -6,9 +6,10 @@ import GameField from './js/game-field';
 import renderTopPanel from './templates/game-top-panel.ejs';
 import Timer from './js/timer';
 import { renderNumber } from './js/helpers';
-import initMenuTabs from './js/menu-tabs';
 import initSettings from './js/settings';
+import initMenuTabs from './js/menu-tabs';
 import { updateStatistics } from './js/statistics';
+import { showModal } from './js/modal';
 
 let currentDifficulty = 'easy';
 
@@ -18,7 +19,7 @@ gameState.subscribe('lose', handleLose);
 
 const gameContainer = document.querySelector('.game');
 
-gameContainer.insertAdjacentHTML('afterbegin', renderTopPanel());
+gameContainer.insertAdjacentHTML('beforeend', renderTopPanel());
 
 const gameField = new GameField(options.difficulty[currentDifficulty], gameState);
 
@@ -59,18 +60,22 @@ function handleWin() {
   gameTimer.stop();
   resetBtn.classList.add('reset-btn_win');
   gameField.handleWin();
-  updateStatistics(createStatisticsData('win'));
+  const statisticsData = createStatisticsData('win');
+  showModal(statisticsData);
+  updateStatistics(statisticsData);
 }
 
 function handleLose(data) {
   gameTimer.stop();
   resetBtn.classList.add('reset-btn_lose');
   gameField.handleLose(data);
-  updateStatistics(createStatisticsData('lose'));
+  const statisticsData = createStatisticsData('lose');
+  showModal(statisticsData);
+  updateStatistics(statisticsData);
 }
 
 resetBtn.addEventListener('click', resetGame);
 
 resetGame();
-initMenuTabs();
 initSettings(resetGame);
+initMenuTabs();

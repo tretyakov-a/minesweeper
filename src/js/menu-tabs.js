@@ -6,14 +6,11 @@ const header = document.querySelector('.header');
 const animationDuration = 400;
 
 function handleMenuBtnClick(e) {
+  console.log('wtf', e)
   const btn = e.target.closest('.button');
 
-  if (btn) {
-    if (btn.dataset.tabLink) {
-      showTab(btn.dataset.tabLink);
-    } else if (btn.classList.contains('menu-tabs__close-btn')) {
-      hideTabs();
-    }
+  if (btn && btn.dataset.tabLink) {
+    showTab(btn.dataset.tabLink);
   }
 }
 
@@ -23,6 +20,7 @@ function hideTabs() {
     header.classList.remove('header_hide');
     showTab();
   }, animationDuration);
+  document.removeEventListener('click', handleDocumentClick); 
 }
 
 function showTab(tabName = '') {
@@ -40,15 +38,18 @@ function showTab(tabName = '') {
       tab.classList.add('menu-tabs__item_show');
     }
   }
+  setTimeout(() => {
+    document.addEventListener('click', handleDocumentClick); 
+  });
 }
 
 function handleDocumentClick(e) {
-  if (isClickOutside(e, ['header'])) {
+  if (isClickOutside(e, ['header'])
+      || e.target.closest('.menu-tabs__close-btn')) {
     hideTabs();
   }
 }
 
 export default function init() {
   document.querySelector('.header').addEventListener('click', handleMenuBtnClick);
-  document.addEventListener('click', handleDocumentClick);
 }

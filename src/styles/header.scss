@@ -93,10 +93,19 @@
   width: 100%;
   height: calc(100vh - var(--header-height) - var(--footer-height) - 20px);
   overflow: hidden;
-  border-top: none;
   border-radius: var(--border-radius);
   background: var(--color-tone-11);
   box-shadow: 0px 0px 15px -5px var(--color-tone-2);
+
+  &__overlay-bottom {
+    position: absolute;
+    z-index: 3;
+    bottom: 20px;
+    left: 30px;
+    right: 30px;
+    height: 40px;
+    background: linear-gradient(180deg, transparent 0%, var(--color-tone-11) 100%);
+  }
 
   &__item {
     height: 100%;
@@ -141,8 +150,8 @@
   }
 
   &__content {
-    padding: 20px 30px;
-    padding-top: 0px;
+    padding: 0 30px;
+    padding-bottom: 30px;
     height: calc(100% - 92px);
     overflow-x: auto;
 

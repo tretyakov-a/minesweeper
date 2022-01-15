@@ -1,0 +1,16 @@
+<div class="modal__content-row">
+  <span class="modal__content-title">Difficulty:</span>
+  <span class="modal__content-data"><%= locals.difficulty %></span>
+</div>
+
+<div class="modal__content-row">
+  <span class="modal__content-title">Time:</span>
+  <span class="modal__content-data"><%= locals.time %></span>
+</div>
+
+<% if (locals.isNewBestTime) { %>
+  <div class="modal__congratulation">
+    Congratulations! Its new best time on <%= locals.difficulty %> difficulty!
+    Old one is <%= locals.oldBestTime %>.
+  </div>
+<% } %>

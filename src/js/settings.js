@@ -1,4 +1,6 @@
 const settings = document.querySelector('.settings');
+settings.querySelector('select[name="difficulty"]').addEventListener('change', handleSettingsChange);
+settings.querySelector('input[name="dark-theme"]').addEventListener('change', handleSettingsChange);
 
 let handleDifficultyChange = null;
 
@@ -20,6 +22,4 @@ function setDarkTheme(isDarkTheme) {
 
 export default function init(onDifficultyChange) {
   handleDifficultyChange = onDifficultyChange;
-  settings.querySelector('select[name="difficulty"]').addEventListener('change', handleSettingsChange);
-  settings.querySelector('input[name="dark-theme"]').addEventListener('change', handleSettingsChange);
 }
