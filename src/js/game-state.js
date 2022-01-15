@@ -100,7 +100,8 @@ export default class GameState extends Emmiter {
       return;
     }
     this.minesFlaggedCounter += n;
-    if (this.minesFlaggedCounter === this.difficulty.mines) {
+    if (this.minesFlaggedCounter === this.difficulty.mines
+        && this.flagsCounter >= 0) {
       this.isGameRunning = false;
       this.openAll();
       this.emit('win');
