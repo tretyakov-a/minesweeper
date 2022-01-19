@@ -6,7 +6,6 @@ const header = document.querySelector('.header');
 const animationDuration = 400;
 
 function handleMenuBtnClick(e) {
-  console.log('wtf', e)
   const btn = e.target.closest('.button');
 
   if (btn && btn.dataset.tabLink) {

@@ -22,7 +22,8 @@ export default class GameState extends Emmiter {
     this.onLose = onLose;
     this.isGameRunning = false;
     this.flagsCounter = this.difficulty.mines;
-    this.minesFlaggedCounter = 0;
+    this.cellsToOpenAmount = 0;
+    this.cellsOpenedCounter = 0;
   }
 
   getCell = (cellKey) => {
@@ -95,13 +96,13 @@ export default class GameState extends Emmiter {
     }
   }
 
-  handleMineFlagged = (n) => {
+  handleCellOpen = (cell) => {
     if (!this.isGameRunning) {
       return;
     }
-    this.minesFlaggedCounter += n;
-    if (this.minesFlaggedCounter === this.difficulty.mines
-        && this.flagsCounter >= 0) {
+
+    this.cellsOpenedCounter += 1;
+    if (this.cellsOpenedCounter === this.cellsToOpenAmount) {
       this.isGameRunning = false;
       this.openAll();
       this.emit('win');
@@ -152,7 +153,8 @@ export default class GameState extends Emmiter {
     }
     this.isGameRunning = false;
     this.flagsCounter = this.difficulty.mines;
-    this.minesFlaggedCounter = 0;
+    this.cellsToOpenAmount = 0;
+    this.cellsOpenedCounter = 0;
     this.state = this._generateInitialMatrix();
   }
 
@@ -219,8 +221,7 @@ export default class GameState extends Emmiter {
       mines[newCellKey.value] = 1;
       const cell = this.getCell(newCellKey);
       cell.value = Cell.VALUE_MINE;
-      cell.subscribe('mineopened', this.handleLose);
-      cell.subscribe('mineflagged', this.handleMineFlagged);
+      cell.subscribe('mineopen', this.handleLose);
     }
   }
 
@@ -239,8 +240,10 @@ export default class GameState extends Emmiter {
         const cellKey = new CellKey(rowIdx, colIdx);
         const cell = this.getCell(cellKey);
         if (!cell.isMined) {
+          this.cellsToOpenAmount += 1;
           const value = this._countNeighboringMines(cellKey);
           cell.value = value;
+          cell.subscribe('cellopen', this.handleCellOpen);
         }
       }
     }

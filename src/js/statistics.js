@@ -47,7 +47,7 @@ function getStatisticsData(difficulty) {
     gamesNumber: games.length,
     wins: wins.length,
     loses: games.length - wins.length,
-    bestTime: renderTime(minTime),
+    bestTime: minTime !== Infinity ? renderTime(minTime) : 'No wins yet',
   };
 }
 

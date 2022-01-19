@@ -75,31 +75,31 @@ ul {
   // margin-right: 40px;
 
   .st0, .st1, .st2, .st3, .st4, .st5, .st6, .st8, .st9 {
-    fill: $light-bg-color;
-    stroke: $dark-text-color;
+    fill: var(--color-tone-2);
+    stroke: var(--color-tone-10);
   }
 
   // JS background
   .st1 {
-    fill: $main-color;
+    fill: var(--color-tone-2);
   }
   
   // JS oval background
   .st7 {
-    fill: $light-bg-color;
+    fill: var(--color-tone-10);
   }
 
   // RS SCHOOL
   .logo-path {
-    fill: $light-bg-color;
-    stroke: $dark-text-color;
+    fill: var(--color-tone-2);
+    stroke: var(--color-tone-10);
     stroke-width: 4px;
     transition: 0.1s ease-in;
   }
 
   &:hover {
-    .logo-path {
-      fill: $main-color;
-    }
+    // .logo-path {
+      opacity: 0.9;
+    // }
   }
 }

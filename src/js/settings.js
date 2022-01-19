@@ -12,7 +12,6 @@ function handleSettingsChange(e) {
 }
 
 function setDarkTheme(isDarkTheme) {
-  console.log('Theme changed to dark: ', isDarkTheme);
   if (isDarkTheme) {
     document.body.classList.add('dark-theme');
   } else {

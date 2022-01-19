@@ -32,7 +32,52 @@
     cursor: pointer;
   }
 
-  &__dark-theme-checkbox {
-    cursor: pointer;
+  // &__dark-theme-checkbox {
+  //   cursor: pointer;
+  // }
+}
+
+.custom-checkbox {
+  --width: 50px;
+  --height: 20px;
+  --thumb-size: calc(var(--height) + var(--height) * 0.3);
+  --border-radius: 10px;
+
+  cursor: pointer;
+
+  input {
+    display: none;
+
+    &:checked ~ .custom-checkbox__container {
+      background: var(--win-color-50);
+
+      .custom-checkbox__thumb {
+        background: var(--win-color);
+        left: calc(var(--width) - var(--thumb-size));
+      }
+    }
+
+  }
+
+  &__container {
+    display: block;
+    position: relative;
+    width: var(--width);
+    height: var(--height);
+    border-radius: var(--border-radius);
+    background: var(--color-tone-8);
+    transition: 0.2s ease;
+  }
+
+  &__thumb {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: calc(-1 * var(--height) * 0.15);
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    border-radius: var(--border-radius);
+    background: var(--color-tone-4);
+    transition: 0.2s ease-in;
   }
 }

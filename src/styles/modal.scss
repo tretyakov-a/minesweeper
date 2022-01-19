@@ -61,8 +61,10 @@
   }
 
   &__congratulation {
+    margin-top: 20px;
     font-size: 16px;
     line-height: 24px;
+    text-align: justify;
     padding: 10px;
     border: 1px solid var(--win-color);
     border-radius: 3px;

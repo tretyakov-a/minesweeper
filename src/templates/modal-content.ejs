@@ -11,6 +11,8 @@
 <% if (locals.isNewBestTime) { %>
   <div class="modal__congratulation">
     Congratulations! Its new best time on <%= locals.difficulty %> difficulty!
+    <% if (locals.oldBestTime !== 0) { %>
     Old one is <%= locals.oldBestTime %>.
+    <% } %>
   </div>
 <% } %>

@@ -5,6 +5,10 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background: var(--color-tone-10);
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 15px -5px var(--color-tone-1);
 
   &__modal {
     display: none;
@@ -64,6 +68,10 @@
     font-size: 32px;
     text-align: center;
     line-height: 46px;
+  }
+
+  &:hover {
+    opacity: 0.8;
   }
 
   &_win {
