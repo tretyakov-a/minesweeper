@@ -1,0 +1,13 @@
+
+<div class="statistics">
+  <!-- <h3 class="statistics__subtitle">Difficulty: <%= locals.difficulty %></h3> -->
+  <h3 class="statistics__subtitle">Difficulty: 
+    <% locals.blocks.forEach(function(block) { %>
+      <%- require('./tab-button.ejs')(block); %>
+    <% }); %>
+  </h3>
+  <% locals.blocks.forEach(function(block) { %>
+    <%- require('./tab.ejs')(block); %>
+  <% }); %>
+</div>
+

@@ -1,0 +1,35 @@
+<div class="statistics__block <% if(locals.active){ %>statistics__block_active<% } %>" data-name="<%= locals.difficulty %>">
+  <div class="statistics__row">
+    <span class="statistics__row-title">Total games:</span>
+    <span class="statistics__row-data"><%= locals.gamesNumber %></span>
+  </div>
+  <div class="statistics__row">
+    <span class="statistics__row-title">Wins:</span>
+    <span class="statistics__row-data"><%= locals.wins %></span>
+  </div>
+  <div class="statistics__row">
+    <span class="statistics__row-title">Loses:</span>
+    <span class="statistics__row-data"><%= locals.loses %></span>
+  </div>
+  <div class="statistics__row">
+    <span class="statistics__row-title">Best time:</span>
+    <span class="statistics__row-data"><%= locals.bestTime %></span>
+  </div>
+  <div class="statistics__row statistics__row_column">
+    <div class="statistics__row-title">Last games:</div>
+    <table class="statistics__games">
+      <tr>
+        <th>Result</th>
+        <th>Time</th>
+        <th>Date</th>
+      </tr>
+      <% locals.games.forEach(function(game, i) { %>
+        <tr class="statistics__games-item">
+          <td class="<% if(game.result === 'win'){ %>statistics__games-result_win<% } else { %>statistics__games-result_lose<% } %>"><%= game.result %></td>
+          <td><%= game.time %></td>
+          <td><%= game.date %></td>  
+        </tr>
+      <% }); %>
+    </table>
+  </div>
+</div>

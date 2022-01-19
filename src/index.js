@@ -8,7 +8,7 @@ import Timer from './js/timer';
 import { renderNumber } from './js/helpers';
 import initSettings from './js/settings';
 import initMenuTabs from './js/menu-tabs';
-import { updateStatistics } from './js/statistics';
+import { updateStatistics, init as initStatistics } from './js/statistics';
 import { showModal } from './js/modal';
 
 let currentDifficulty = 'easy';
@@ -79,3 +79,4 @@ resetBtn.addEventListener('click', resetGame);
 resetGame();
 initSettings(resetGame);
 initMenuTabs();
+initStatistics();

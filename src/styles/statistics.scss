@@ -8,6 +8,24 @@
     border-bottom: 1px solid var(--color-tone-6);
     margin-bottom: 10px;
   }
+  
+  &__block {
+    display: none;
+
+    &_active {
+      display: block;
+    }
+  }
+
+  &__button {
+    width: auto;
+    font-size: 20px;
+    color: var(--color-tone-9);
+
+    &_active {
+      color: var(--btn-color);
+    }
+  }
 
   &__row {
     font-size: 16px;
@@ -16,12 +34,43 @@
     justify-content: space-between;
     border-bottom: 1px solid var(--color-tone-10);
 
+    &_column {
+      flex-direction: column;
+    }
+    
     &-title {
       color: var(--color-tone-4)
     }
 
     &-data {
 
+    }
+  }
+
+  &__games {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+
+    &-result_win {
+      color: var(--win-color);
+    }
+
+    &-result_lose {
+      color: var(--lose-color);
+    }
+
+    th {
+      font-weight: 400;
+    }
+
+    th, td {
+      border: 1px solid var(--color-tone-8);
+      padding: 5px 10px;
+    }
+
+    td {
+      text-align: center;
     }
   }
 }

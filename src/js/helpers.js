@@ -17,9 +17,10 @@ function isClickOutside(e, classNames) {
 
 function renderTime(timeMs) {
   const ms = renderNumber(timeMs % 1000, 3);
-  const min = renderNumber(Math.floor(timeMs / 1000 / 60), 2);
-  const sec = renderNumber(Math.floor(timeMs / 1000) - min * 60, 2);
-  return `${min}:${sec}:${ms}`;
+  // const min = renderNumber(Math.floor(timeMs / 1000 / 60), 2);
+  // const sec = renderNumber(Math.floor(timeMs / 1000) - min * 60, 2);
+  const sec = renderNumber(Math.floor(timeMs / 1000), 1);
+  return `${sec}.${ms} sec`;
 }
 
 export {
